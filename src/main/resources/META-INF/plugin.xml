@@ -1,0 +1,31 @@
+<idea-plugin>
+  <id>de.espend.idea.php.generic</id>
+  <name>PHP Generics</name>
+  <version>1.0</version>
+  <vendor email="daniel@espendiller.net" url="http://www.espend.de">Daniel Espendiller</vendor>
+
+  <description>Extends support generic type and function</description>
+
+  <change-notes></change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="173.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+  <depends>com.intellij.modules.platform</depends>
+  <depends>de.espend.idea.php.annotation</depends>
+
+</idea-plugin>
