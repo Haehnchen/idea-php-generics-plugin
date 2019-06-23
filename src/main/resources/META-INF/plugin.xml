@@ -1,5 +1,5 @@
 <idea-plugin>
-  <id>de.espend.idea.php.generic</id>
+  <id>de.espend.idea.php.generics</id>
   <name>PHP Generics</name>
   <version>1.0</version>
   <vendor email="daniel@espendiller.net" url="http://www.espend.de">Daniel Espendiller</vendor>
@@ -18,7 +18,7 @@
   -->
 
   <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
+    <fileBasedIndex implementation="de.espend.idea.php.generics.indexer.TemplateAnnotationIndex"/>
   </extensions>
 
   <actions>
