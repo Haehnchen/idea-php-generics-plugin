@@ -22,7 +22,7 @@ public class GenericsUtil {
         PhpDocComment phpDocComment = phpClass.getDocComment();
         if(phpDocComment != null) {
             // "@template T"
-            // "@template Foo"
+            // "@psalm-template Foo"
             for (String docBlock : Arrays.asList("@template", "@psalm-template")) {
                 for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName(docBlock)) {
                     String tagValue = phpDocTag.getTagValue();
@@ -74,6 +74,8 @@ public class GenericsUtil {
         templates.addAll(Arrays.asList(docComment.getTagElementsByName("@template")));
         templates.addAll(Arrays.asList(docComment.getTagElementsByName("@psalm-template")));
 
+        // workarounds for inconsistently psi structure
+        // https://youtrack.jetbrains.com/issue/WI-47644
         for (PhpDocTag template : templates) {
             Matcher matcher = Pattern.compile("([\\w_-]+)\\s+as\\s+([\\w_\\\\-]+)", Pattern.MULTILINE).matcher(template.getText());
             if (!matcher.find()) {

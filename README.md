@@ -34,6 +34,9 @@ Changelog   | [CHANGELOG](CHANGELOG.md)
     }
 ```
 
+## Limitation / Issues
+
+ * Inconsistently PhpStorm docblock parser: https://youtrack.jetbrains.com/issue/WI-47644
 
 ## TODO
 
