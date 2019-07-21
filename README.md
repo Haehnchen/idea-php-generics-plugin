@@ -61,3 +61,23 @@ https://youtrack.jetbrains.com/issue/WI-45248
         }
     }
 ```
+
+
+https://github.com/phpstan/phpdoc-parser/pull/30
+
+```php
+
+/**
+* @param array{'foo': int, "bar": string} $a
+* @param array{0: int, 1?: int} $a
+* @param array{int, int} $a
+* @param array{foo: int, bar: string} $a
+* @param array{foo:string, bar:?int} $a
+*/
+```
+
+Others
+
+```php
+ /** @var array<int, string> */
+ ```
