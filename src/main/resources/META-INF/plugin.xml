@@ -45,10 +45,31 @@
 
     <completion.contributor language="PHP" implementationClass="de.espend.idea.php.generics.CompletionNavigationProvider$Completion"/>
     <gotoDeclarationHandler implementation="de.espend.idea.php.generics.CompletionNavigationProvider$GotoDeclaration"/>
+
+    <applicationService serviceImplementation="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfigurationManager$AppPhpStanValidatorConfigurationBaseManager"/>
+    <projectService serviceImplementation="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfigurationManager"/>
+    <projectService serviceImplementation="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfigurationManager$ProjectPhpStanValidatorConfigurationBaseManager"/>
+    <externalAnnotator language="PHP" implementationClass="de.espend.idea.php.quality.phpstan.PhpStanAnnotatorQualityToolAnnotator"/>
+    <projectService serviceImplementation="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorProjectConfiguration"/>
+    <projectService serviceImplementation="de.espend.idea.php.quality.phpstan.blacklist.PhpStanValidatorBlackList"/>
+
+    <localInspection language="PHP"
+                     shortName="PhpStanFixerValidation"
+                     displayName="PHPStan Fixer validation"
+                     groupPath="PHP"
+                     groupName="Quality tools"
+                     enabledByDefault="false"
+                     level="WEAK WARNING"
+                     cleanupTool="true"
+                     implementationClass="de.espend.idea.php.quality.phpstan.PhpStanFixerValidationInspection"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.jetbrains.php">
     <typeProvider4 implementation="de.espend.idea.php.generics.type.TemplateAnnotationTypeProvider"/>
+
+    <tools.quality.type implementation="de.espend.idea.php.quality.phpstan.PhpStanQualityToolType"/>
+    <tools.projectConfigurableForm instance="de.espend.idea.php.quality.phpstan.form.PhpStanValidatorConfigurable"/>
+    <config.interpreters.PhpInterpretersStateListener implementation="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfigurationManager"/>
   </extensions>
 
   <actions>
