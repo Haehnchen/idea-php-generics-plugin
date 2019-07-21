@@ -1,21 +1,29 @@
 <idea-plugin>
   <id>de.espend.idea.php.generics</id>
   <name>PHP Generics</name>
-  <version>1.0</version>
+  <version>0.1.0</version>
   <vendor email="daniel@espendiller.net" url="http://www.espend.de">Daniel Espendiller</vendor>
 
-  <description>Extends support generic type and function</description>
+  <description><![CDATA[
+    <p>Extends support generic type and function</p>
 
-  <change-notes></change-notes>
+    !!! Work in progress !!!
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="173.0"/>
+    <h2>Supported syntax</h2>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+    <ul>
+      <li><a href="https://github.com/phpstan/phpstan">PHPstan</a></li>
+      <li><a href="https://psalm.dev">psalm.dev</a></li>
+    </ul>
+
+    <h2>Features</h2>
+    <ul>
+      <li>class-string parameter inspection</li>
+    </ul>
+
+  ]]></description>
+
+  <idea-version since-build="182.0"/>
 
   <extensions defaultExtensionNs="com.intellij">
     <fileBasedIndex implementation="de.espend.idea.php.generics.indexer.TemplateAnnotationIndex"/>
