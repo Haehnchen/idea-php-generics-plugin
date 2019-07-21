@@ -1,16 +1,16 @@
 # IntelliJ IDEA / PhpStorm PHP Generics
 
-[![Build Status](https://travis-ci.org/Haehnchen/idea-php-generics-plugin.svg?branch=master)](https://travis-ci.org/Haehnchen/idea-php-annotation-plugin)
-[![Version](http://phpstorm.espend.de/badge/xxxx/version)](https://plugins.jetbrains.com/plugin/7320)
-[![Downloads](http://phpstorm.espend.de/badge/xxxx/downloads)](https://plugins.jetbrains.com/plugin/7320)
-[![Downloads last month](http://phpstorm.espend.de/badge/xxxx/last-month)](https://plugins.jetbrains.com/plugin/7320)
+[![Build Status](https://travis-ci.org/Haehnchen/idea-php-generics-plugin.svg?branch=master)](https://travis-ci.org/Haehnchen/idea-php-generics-plugin)
+[![Version](http://phpstorm.espend.de/badge/12754/version)](https://plugins.jetbrains.com/plugin/12754)
+[![Downloads](http://phpstorm.espend.de/badge/12754/downloads)](https://plugins.jetbrains.com/plugin/12754)
+[![Downloads last month](http://phpstorm.espend.de/badge/12754/last-month)](https://plugins.jetbrains.com/plugin/12754)
 [![Donate to this project using Paypal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.me/DanielEspendiller)
 
 
 Key         | Value
 ----------- | -----------
-Plugin url  | https://plugins.jetbrains.com/plugin/xxx
-Id          | de.espend.idea.php.generic
+Plugin url  | https://plugins.jetbrains.com/plugin/12754-php-generics
+Id          | de.espend.idea.php.generics
 Changelog   | [CHANGELOG](CHANGELOG.md)
 
 
