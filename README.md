@@ -16,7 +16,26 @@ Changelog   | [CHANGELOG](CHANGELOG.md)
 
 !!! Work in progress !!!
 
-## Support
+## Supported
+
+### class-string
+
+ * Inspections
+
+```php
+    /**
+     * @[psalm-]template T as Exception
+     * @[psalm-]param T::class $type
+     * @return T
+     */
+    function a(string $type): Exception
+    {
+        return new $type;
+    }
+```
+
+
+## TODO
 
 https://youtrack.jetbrains.com/issue/WI-47158
 

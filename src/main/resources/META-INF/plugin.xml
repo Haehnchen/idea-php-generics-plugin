@@ -19,7 +19,15 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <fileBasedIndex implementation="de.espend.idea.php.generics.indexer.TemplateAnnotationIndex"/>
+
+
+    <localInspection groupPath="Symfony" shortName="ClassStringLocalInspection" displayName="Route Missing"
+                     groupName="Route"
+                     enabledByDefault="true" level="WARNING"
+                     language="PHP"
+                     implementationClass="de.espend.idea.php.generics.inspection.ClassStringLocalInspection"/>
   </extensions>
+
 
   <actions>
     <!-- Add your actions here -->
