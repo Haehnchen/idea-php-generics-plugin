@@ -9,6 +9,7 @@ import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocTag;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
+import de.espend.idea.php.generics.dict.ParameterArrayType;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class GenericsUtil {
     public static boolean isGenericsClass(@NotNull PhpClass phpClass) {
@@ -120,6 +122,154 @@ public class GenericsUtil {
         }
 
         return instance;
+    }
+
+    /**
+     * - "@return array{optional?: string, bar: int}"
+     * - "@return array{foo: string, bar: int}"
+     * - "@psalm-param array{foo: string, bar: int}"
+     */
+    @NotNull
+    public static Collection<ParameterArrayType> getReturnArrayTypes(@NotNull PhpNamedElement phpNamedElement) {
+        PhpDocComment docComment = phpNamedElement.getDocComment();
+        if (docComment == null) {
+            return Collections.emptyList();
+        }
+
+        Collection<ParameterArrayType> types = new ArrayList<>();
+
+        Collection<PhpDocTag> returnTags = new HashSet<>();
+        returnTags.addAll(Arrays.asList(docComment.getTagElementsByName("@return")));
+        returnTags.addAll(Arrays.asList(docComment.getTagElementsByName("@psalm-return")));
+
+        // workaround for invalid tags lexer on PhpStorm side
+        for (PhpDocTag phpDocTag : returnTags) {
+            String text = phpDocTag.getText();
+            Matcher arrayElementsMatcher = Pattern.compile("array\\s*\\{(.*)}\\s*", Pattern.MULTILINE).matcher(text);
+            if (arrayElementsMatcher.find()) {
+                String group = arrayElementsMatcher.group(1);
+                types.addAll(GenericsUtil.getParameterArrayTypes(group, phpDocTag));
+            }
+        }
+
+        return types;
+    }
+
+    /**
+     * - "@return array{optional?: string, bar: int}"
+     * - "@return array{foo: string, bar: int}"
+     * - "@return array{foo: string, bar: int}"
+     * - "@psalm-param array{foo: Foo, ?bar: int}"
+     * - "@param array{foo: Foo, ?bar: int} $options"
+     */
+    @NotNull
+    public static Collection<ParameterArrayType> getParameterArrayTypes(@NotNull String content, @NotNull String parameter, @NotNull PsiElement context) {
+        Matcher parameterNameMatcher = Pattern.compile(".*\\$([\\w_-]+)\\s*$", Pattern.MULTILINE).matcher(content);
+        if (!parameterNameMatcher.find()) {
+            return Collections.emptyList();
+        }
+
+        String group = parameterNameMatcher.group(1);
+        if (!parameter.equalsIgnoreCase(group)) {
+            return Collections.emptyList();
+        }
+
+        // array{foo: string, bar: int}
+        Matcher arrayElementsMatcher = Pattern.compile("array\\s*\\{(.*)}\\s*", Pattern.MULTILINE).matcher(content);
+        if (!arrayElementsMatcher.find()) {
+            return Collections.emptyList();
+        }
+
+        return getParameterArrayTypes(arrayElementsMatcher.group(1), context);
+    }
+
+    @NotNull
+    private static Collection<ParameterArrayType> getParameterArrayTypes(@NotNull PhpDocComment phpDocComment, @NotNull String parameterName) {
+        Collection<ParameterArrayType> vars = new ArrayList<>();
+
+        for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName("@psalm-param")) {
+            String tagValue = phpDocTag.getTagValue();
+            vars.addAll(GenericsUtil.getParameterArrayTypes(tagValue, parameterName, phpDocTag));
+        }
+
+        for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName("@param")) {
+            String tagValue = phpDocTag.getTagValue();
+            vars.addAll(GenericsUtil.getParameterArrayTypes(tagValue, parameterName, phpDocTag));
+        }
+
+        return vars;
+    }
+
+    /**
+     * - "@return array{optional?: string, bar: int}"
+     * - "@return array{foo: string, bar: int}"
+     * - "@return array{foo: string, bar: int}"
+     * - "@psalm-param array{foo: Foo, ?bar: int}"
+     * - "@param array{foo: Foo, ?bar: int} $options"
+     */
+    @NotNull
+    private static Collection<ParameterArrayType> getParameterArrayTypes(@NotNull String array, @NotNull PsiElement context) {
+        Collection<ParameterArrayType> parameters = new ArrayList<>();
+
+        for (String s : array.split(",")) {
+            String trim = StringUtils.trim(s);
+            String[] split = trim.split(":");
+
+            if(split.length != 2) {
+                continue;
+            }
+
+            // @TODO: class resolve
+            Set<String> types = Arrays.stream(split[1].split("\\|"))
+                .map(StringUtils::trim)
+                .collect(Collectors.toSet());
+
+            boolean isOptional = split[0].startsWith("?") || split[0].endsWith("?");
+
+            parameters.add(new ParameterArrayType(
+                isOptional ? StringUtils.strip(split[0], "?") : split[0],
+                types,
+                isOptional,
+                context
+            ));
+        }
+
+        return parameters;
+    }
+
+    /**
+     * Resolve the given parameter to find possible psalm docs recursively
+     *
+     * $foo->foo([])
+     *
+     * TODO: method search in recursion
+     */
+    @NotNull
+    public static Collection<ParameterArrayType> getTypesForParameter(@NotNull PsiElement psiElement) {
+        PsiElement parent = psiElement.getParent();
+
+        if (parent instanceof ParameterList) {
+            PsiElement functionReference = parent.getParent();
+            if (functionReference instanceof FunctionReference) {
+                PsiElement resolve = ((FunctionReference) functionReference).resolve();
+
+                if (resolve instanceof Function) {
+                    Parameter[] functionParameters = ((Function) resolve).getParameters();
+
+                    int currentParameterIndex = PhpElementsUtil.getCurrentParameterIndex((ParameterList) parent, psiElement);
+                    if (currentParameterIndex >= 0 && functionParameters.length - 1 >= currentParameterIndex) {
+                        String name = functionParameters[currentParameterIndex].getName();
+                        PhpDocComment docComment = ((Function) resolve).getDocComment();
+
+                        if (docComment != null) {
+                            return GenericsUtil.getParameterArrayTypes(docComment, name);
+                        }
+                    }
+                }
+            }
+        }
+
+        return Collections.emptyList();
     }
 
     @Nullable
