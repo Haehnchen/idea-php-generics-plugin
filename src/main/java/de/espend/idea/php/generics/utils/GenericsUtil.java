@@ -192,9 +192,25 @@ public class GenericsUtil {
             vars.addAll(GenericsUtil.getParameterArrayTypes(tagValue, parameterName, phpDocTag));
         }
 
+        // we need a workaround for "@param" as the lexer strips it all of after "array{"
         for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName("@param")) {
+            // {foobar2: string} $foobar
             String tagValue = phpDocTag.getTagValue();
-            vars.addAll(GenericsUtil.getParameterArrayTypes(tagValue, parameterName, phpDocTag));
+
+            // extract the parameter name $foobar
+            Matcher parameterNameMatcher = Pattern.compile(".*\\$([\\w_-]+)\\s*$", Pattern.MULTILINE).matcher(tagValue);
+            if (!parameterNameMatcher.find()) {
+                continue;
+            }
+
+            // @param array{foobar2: string}
+            String text = phpDocTag.getText();
+
+            // try to build a valid string; make in as error prone safe as possible; we need provide as on "@psalm-param":
+            // array{foobar2: string} $foobar
+            String content = text.replaceAll("\\s*@param\\s*", "") + " $" + parameterNameMatcher.group(1);
+
+            vars.addAll(GenericsUtil.getParameterArrayTypes(content, parameterName, phpDocTag));
         }
 
         return vars;
