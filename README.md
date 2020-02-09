@@ -47,7 +47,7 @@ https://psalm.dev/docs/annotating_code/type_syntax/array_types/
     /**
      * @[psalm-]param array{foo: string, bar: int} $type
      */
-    function a(string $type): Exception
+    function a(array $type): Exception
     {
     }
 ```
@@ -55,6 +55,11 @@ https://psalm.dev/docs/annotating_code/type_syntax/array_types/
 ## Limitation / Issues
 
  * Inconsistently PhpStorm docblock parser: https://youtrack.jetbrains.com/issue/WI-47644
+ 
+ ## Screenshots
+
+ ![class-string](https://plugins.jetbrains.com/files/12754/screenshot_20052.png)
+ ![Object-like arrays](https://plugins.jetbrains.com/files/12754/screenshot_21124.png)
 
 ## TODO
 
