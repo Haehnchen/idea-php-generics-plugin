@@ -21,7 +21,7 @@ public class CompletionNavigationProviderTest extends AnnotationLightCodeInsight
         assertCompletionContains("test.php",
             "<?php\n" +
                 "(new Bar())->foobar(['<caret>'])",
-            "bar", "foo", "foobar"
+            "bar", "foo", "foobar", "foobar2", "foo--__---2FOO2122"
         );
     }
 
