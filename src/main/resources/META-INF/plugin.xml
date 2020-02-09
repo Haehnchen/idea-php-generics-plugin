@@ -2,7 +2,7 @@
   <id>de.espend.idea.php.generics</id>
   <name>PHP Generics</name>
   <version>0.1.0</version>
-  <vendor email="daniel@espendiller.net" url="http://www.espend.de">Daniel Espendiller</vendor>
+  <vendor email="daniel@espendiller.net" url="http://www.espend.de">espend_de</vendor>
 
   <description><![CDATA[
     <p>Extends support generic type and function</p>
