@@ -3,6 +3,8 @@ package de.espend.idea.php.generics.utils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.util.PsiElementFilter;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.codeInsight.PhpCodeInsightUtil;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
@@ -258,7 +260,17 @@ public class GenericsUtil {
 
                     int currentParameterIndex = PhpElementsUtil.getCurrentParameterIndex((ParameterList) parent, psiElement);
                     if (currentParameterIndex >= 0 && functionParameters.length - 1 >= currentParameterIndex) {
-                        String name = functionParameters[currentParameterIndex].getName();
+                        Parameter functionParameter = functionParameters[currentParameterIndex];
+
+                        String name = functionParameter.getName();
+
+                        PsiElement[] childrenOfTypeAsList = PsiTreeUtil.collectElements(resolve, new PsiElementFilter() {
+                            @Override
+                            public boolean isAccepted(@NotNull PsiElement element) {
+                                return element instanceof Variable && name.equalsIgnoreCase(((Variable) element).getName()) && element.getParent() instanceof ParameterList;
+                            }
+                        });
+
                         PhpDocComment docComment = ((Function) resolve).getDocComment();
 
                         if (docComment != null) {

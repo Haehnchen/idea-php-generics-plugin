@@ -25,6 +25,14 @@ public class CompletionNavigationProviderTest extends AnnotationLightCodeInsight
         );
     }
 
+    public void testThatArrayProvidesPsalmTypesWithRecursionResolvingFunctionsCompletion() {
+        assertCompletionContains("test.php",
+            "<?php\n" +
+                "(new Bar())->foobar2(null, ['<caret>'])",
+            "bar", "foo", "foobar"
+        );
+    }
+
     public void testThatArrayProvidesPsalmTypesNavigation() {
         assertNavigationMatch("test.php",
             "<?php\n" +

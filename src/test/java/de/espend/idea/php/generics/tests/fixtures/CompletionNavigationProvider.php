@@ -14,5 +14,15 @@ namespace
         public function foobar(array $foobar)
         {
         }
+
+        public function foobar2($a, array $foobar, $c)
+        {
+            $this->foobar3(null, null, $foobar, null);
+        }
+
+        public function foobar3($c, $b, array $x, $z)
+        {
+            $this->foobar($x);
+        }
     }
 }
