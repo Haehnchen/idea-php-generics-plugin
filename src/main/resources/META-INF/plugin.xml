@@ -34,6 +34,9 @@
                      enabledByDefault="true" level="WARNING"
                      language="PHP"
                      implementationClass="de.espend.idea.php.generics.inspection.ClassStringLocalInspection"/>
+
+    <completion.contributor language="PHP" implementationClass="de.espend.idea.php.generics.CompletionNavigationProvider$Completion"/>
+    <gotoDeclarationHandler implementation="de.espend.idea.php.generics.CompletionNavigationProvider$GotoDeclaration"/>
   </extensions>
 
 
