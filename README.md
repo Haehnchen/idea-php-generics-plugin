@@ -34,6 +34,24 @@ Changelog   | [CHANGELOG](CHANGELOG.md)
     }
 ```
 
+### Object-like arrays
+
+https://psalm.dev/docs/annotating_code/type_syntax/array_types/
+
+```php
+    a(['<caret>' => ''])
+
+```
+
+```php
+    /**
+     * @[psalm-]param array{foo: string, bar: int} $type
+     */
+    function a(string $type): Exception
+    {
+    }
+```
+
 ## Limitation / Issues
 
  * Inconsistently PhpStorm docblock parser: https://youtrack.jetbrains.com/issue/WI-47644
