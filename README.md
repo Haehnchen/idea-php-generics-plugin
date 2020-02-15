@@ -52,6 +52,34 @@ https://psalm.dev/docs/annotating_code/type_syntax/array_types/
     }
 ```
 
+
+### psalm-immutable and psalm-readonly
+
+Inspection to show disallowed write access
+
+```
+class PsalmReadOnly {
+    /**
+     * @psalm-readonly
+     */
+    public string $readOnly;
+}
+
+/**
+ * @psalm-immutable
+ */
+class PsalmImmutable {
+    public string $readOnly;
+}
+```
+
+Follows into errors hints
+
+```
+(new PsalmReadOnly())->readOnly = 'test';
+(new PsalmImmutable())->readOnly = 'test';
+```
+
 ## Limitation / Issues
 
  * Inconsistently PhpStorm docblock parser: https://youtrack.jetbrains.com/issue/WI-47644
