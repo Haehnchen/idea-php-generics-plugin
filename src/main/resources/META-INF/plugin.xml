@@ -30,11 +30,17 @@
     <fileBasedIndex implementation="de.espend.idea.php.generics.indexer.TemplateAnnotationIndex"/>
 
 
+    <localInspection groupPath="Generics" shortName="ClassStringLocalInspection" displayName="class-string expected"
+                     groupName="Class"
+                     enabledByDefault="true" level="WARNING"
+                     language="PHP"
+                     implementationClass="de.espend.idea.php.generics.inspection.ClassStringLocalInspection"/>
+
     <localInspection groupPath="Symfony" shortName="ClassStringLocalInspection" displayName="Route Missing"
                      groupName="Route"
                      enabledByDefault="true" level="WARNING"
                      language="PHP"
-                     implementationClass="de.espend.idea.php.generics.inspection.ClassStringLocalInspection"/>
+                     implementationClass="de.espend.idea.php.generics.inspection.PsalmLocalImmutableInspection"/>
 
     <completion.contributor language="PHP" implementationClass="de.espend.idea.php.generics.CompletionNavigationProvider$Completion"/>
     <gotoDeclarationHandler implementation="de.espend.idea.php.generics.CompletionNavigationProvider$GotoDeclaration"/>
