@@ -88,6 +88,7 @@ Follows into errors hints
 
  ![class-string](https://plugins.jetbrains.com/files/12754/screenshot_20052.png)
  ![Object-like arrays](https://plugins.jetbrains.com/files/12754/screenshot_21124.png)
+ ![Psalm Immutable](https://plugins.jetbrains.com/files/12754/screenshot_21166.png)
 
 ## TODO
 
