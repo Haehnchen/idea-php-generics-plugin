@@ -26,7 +26,7 @@ public class PsalmLocalImmutableInspection extends LocalInspectionTool {
     public PsiElementVisitor buildVisitor(final @NotNull ProblemsHolder holder, boolean isOnTheFly) {
         return new PsiElementVisitor() {
             @Override
-            public void visitElement(PsiElement element) {
+            public void visitElement(@NotNull PsiElement element) {
                 // $this->a = 'foobar';
                 if (element instanceof FieldReference && element.getParent() instanceof AssignmentExpression) {
                     Function function = PsiTreeUtil.getParentOfType(element, Function.class);

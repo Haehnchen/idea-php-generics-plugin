@@ -2,7 +2,10 @@ Changelog
 =========
 
 # Version names
-* 0.1.x: PhpStorm 2019.1+
+* 0.x.x: PhpStorm 2019.1+
+
+## 0.3.1
+* Just guessing this will fix Issue [#11](https://github.com/Haehnchen/idea-php-generics-plugin/issues/11) [#10](https://github.com/Haehnchen/idea-php-generics-plugin/issues/10) (HenkPoley)
 
 ## 0.3.0
 * Add inspection for readonly access on property based on @psalm-readonly and @psalm-immutable tag
