@@ -24,6 +24,7 @@ public class TemplateAnnotationIndexTest extends AnnotationLightCodeInsightFixtu
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\instantiator");
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\instantiatorParam");
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\instantiatorReturn");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\instantiatorPhpStan");
 
         assertIndexContainsKeyWithValue(
             TemplateAnnotationIndex.KEY,
@@ -35,6 +36,12 @@ public class TemplateAnnotationIndexTest extends AnnotationLightCodeInsightFixtu
             TemplateAnnotationIndex.KEY,
             "\\instantiator",
             value -> value.getFqn().equals("\\instantiator") && value.getParameterIndex() == 0 && value.getType() == TemplateAnnotationUsage.Type.FUNCTION_CLASS_STRING
+        );
+
+        assertIndexContainsKeyWithValue(
+            TemplateAnnotationIndex.KEY,
+            "\\instantiatorPhpStan",
+            value -> value.getFqn().equals("\\instantiatorPhpStan") && value.getParameterIndex() == 0 && value.getType() == TemplateAnnotationUsage.Type.FUNCTION_CLASS_STRING
         );
     }
 }

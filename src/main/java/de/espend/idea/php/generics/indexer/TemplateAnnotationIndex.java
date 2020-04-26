@@ -19,16 +19,13 @@ import de.espend.idea.php.annotation.util.AnnotationUtil;
 import de.espend.idea.php.generics.indexer.dict.TemplateAnnotationUsage;
 import de.espend.idea.php.generics.indexer.externalizer.ObjectStreamDataExternalizer;
 import de.espend.idea.php.generics.utils.GenericsUtil;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * @author Daniel Espendiller <daniel@espendiller.net>
@@ -125,52 +122,45 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
             }
         }
 
-        private void visitPhpClass(Function function) {
-            for (String docBlock : Arrays.asList("@template", "@psalm-template")) {
-                PhpDocComment phpDocComment = function.getDocComment();
-                if (phpDocComment == null) {
+        private void visitPhpClass(@NotNull Function function) {
+            PhpDocComment phpDocComment = function.getDocComment();
+            if (phpDocComment == null) {
+                return;
+            }
+
+            for (PhpDocTag phpDocTag : GenericsUtil.getTagElementsByNameForAllFrameworks(phpDocComment, "template")) {
+                // @template T
+                String templateName = StringUtils.trim(phpDocTag.getTagValue());
+                if (StringUtils.isBlank(templateName) || !templateName.matches("\\w+")) {
                     continue;
                 }
 
-                for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName(docBlock)) {
-                    // @template T
-                    String templateName = StringUtils.trim(phpDocTag.getTagValue());
-                    if (StringUtils.isBlank(templateName) || !templateName.matches("\\w+")) {
+                // return doctag must match: "@return T"
+                if (!hasReturnTypeTemplate(phpDocComment, templateName)) {
+                    continue;
+                }
+
+                // get possible tags
+                for (PhpDocTag docTag : GenericsUtil.getTagElementsByNameForAllFrameworks(phpDocComment, "param")) {
+                    String psalmParamTag = docTag.getTagValue();
+                    Pattern pattern = Pattern.compile("class-string<" + Pattern.quote(templateName) + ">.*\\$([\\w-]+)");
+
+                    Matcher matcher = pattern.matcher(psalmParamTag);
+                    if (!matcher.find()) {
                         continue;
                     }
 
-                    // return doctag must match: "@return T"
-                    if (!hasReturnTypeTemplate(phpDocComment, templateName)) {
-                        continue;
-                    }
+                    String parameterName = matcher.group(1);
+                    Parameter[] parameters = function.getParameters();
 
-                    // get possible tags
-                    PhpDocTag[] phpDocTags = Stream.concat(
-                        Arrays.stream(phpDocComment.getTagElementsByName("@psalm-param")),
-                        Arrays.stream(phpDocComment.getTagElementsByName("@param"))
-                    ).toArray(PhpDocTag[]::new);
+                    for (int i = 0; i < parameters.length; i++) {
+                        Parameter parameter = parameters[i];
+                        String name = parameter.getName();
+                        if (name.equalsIgnoreCase(parameterName)) {
+                            String fqn = function.getFQN();
 
-                    for (PhpDocTag docTag : phpDocTags) {
-                        String psalmParamTag = docTag.getTagValue();
-                        Pattern pattern = Pattern.compile("class-string<" + Pattern.quote(templateName) + ">.*\\$([\\w-]+)");
-
-                        Matcher matcher = pattern.matcher(psalmParamTag);
-                        if (!matcher.find()) {
-                            continue;
-                        }
-
-                        String parameterName = matcher.group(1);
-                        Parameter[] parameters = function.getParameters();
-
-                        for (int i = 0; i < parameters.length; i++) {
-                            Parameter parameter = parameters[i];
-                            String name = parameter.getName();
-                            if (name.equalsIgnoreCase(parameterName)) {
-                                String fqn = function.getFQN();
-
-                                map.put(fqn, new TemplateAnnotationUsage(fqn, TemplateAnnotationUsage.Type.FUNCTION_CLASS_STRING, i));
-                                return;
-                            }
+                            map.put(fqn, new TemplateAnnotationUsage(fqn, TemplateAnnotationUsage.Type.FUNCTION_CLASS_STRING, i));
+                            return;
                         }
                     }
                 }
@@ -193,7 +183,7 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
             }
 
             // fallback to @psalm-return
-            for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName("@psalm-return")) {
+            for (PhpDocTag phpDocTag : GenericsUtil.getTagElementsByNameForAllFrameworks(phpDocComment, "return")) {
                 if (StringUtils.trim(phpDocTag.getTagValue()).equals(templateName)) {
                     return true;
                 }

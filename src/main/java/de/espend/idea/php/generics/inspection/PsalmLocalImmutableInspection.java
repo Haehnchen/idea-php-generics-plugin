@@ -9,6 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocTag;
 import com.jetbrains.php.lang.psi.elements.*;
+import de.espend.idea.php.generics.utils.GenericsUtil;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -42,8 +43,7 @@ public class PsalmLocalImmutableInspection extends LocalInspectionTool {
                             // search for "@psalm-readonly" on property level
                             PhpDocComment docComment = ((Field) resolve).getDocComment();
                             if (docComment != null) {
-                                PhpDocTag[] tagElementsByName = docComment.getTagElementsByName("@psalm-readonly");
-                                isReadOnly = tagElementsByName.length > 0;
+                                isReadOnly = GenericsUtil.getTagElementsByNameForAllFrameworks(docComment, "psalm-readonly").length > 0;
                             }
 
                             // search for "@psalm-immutable" on class level if not already given on property level
@@ -52,8 +52,7 @@ public class PsalmLocalImmutableInspection extends LocalInspectionTool {
                                 if (containingClass != null) {
                                     PhpDocComment phpDocComment = containingClass.getDocComment();
                                     if (phpDocComment != null) {
-                                        PhpDocTag[] tagElementsByName = phpDocComment.getTagElementsByName("@psalm-immutable");
-                                        isReadOnly = tagElementsByName.length > 0;
+                                        isReadOnly = GenericsUtil.getTagElementsByNameForAllFrameworks(phpDocComment, "immutable").length > 0;
                                     }
                                 }
                             }

@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GenericsUtil {
     public static boolean isGenericsClass(@NotNull PhpClass phpClass) {
@@ -25,12 +26,10 @@ public class GenericsUtil {
         if(phpDocComment != null) {
             // "@template T"
             // "@psalm-template Foo"
-            for (String docBlock : Arrays.asList("@template", "@psalm-template")) {
-                for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName(docBlock)) {
-                    String tagValue = phpDocTag.getTagValue();
-                    if (StringUtils.isNotBlank(tagValue) && tagValue.matches("\\w+")) {
-                        return true;
-                    }
+            for (PhpDocTag phpDocTag : getTagElementsByNameForAllFrameworks(phpDocComment, "template")) {
+                String tagValue = phpDocTag.getTagValue();
+                if (StringUtils.isNotBlank(tagValue) && tagValue.matches("\\w+")) {
+                    return true;
                 }
             }
         }
@@ -72,13 +71,9 @@ public class GenericsUtil {
 
         Map<String, String> asInstances = new HashMap<>();
 
-        Collection<PhpDocTag> templates = new HashSet<>();
-        templates.addAll(Arrays.asList(docComment.getTagElementsByName("@template")));
-        templates.addAll(Arrays.asList(docComment.getTagElementsByName("@psalm-template")));
-
         // workarounds for inconsistently psi structure
         // https://youtrack.jetbrains.com/issue/WI-47644
-        for (PhpDocTag template : templates) {
+        for (PhpDocTag template : getTagElementsByNameForAllFrameworks(docComment, "template")) {
             Matcher matcher = Pattern.compile("([\\w_-]+)\\s+as\\s+([\\w_\\\\-]+)", Pattern.MULTILINE).matcher(template.getText());
             if (!matcher.find()) {
                 continue;
@@ -87,12 +82,8 @@ public class GenericsUtil {
             asInstances.put(matcher.group(1), matcher.group(2));
         }
 
-        Collection<PhpDocTag> phpDocParamTags = new HashSet<>();
-        phpDocParamTags.addAll(Arrays.asList(docComment.getTagElementsByName("@param")));
-        phpDocParamTags.addAll(Arrays.asList(docComment.getTagElementsByName("@psalm-param")));
-
         String instance = null;
-        for (PhpDocTag phpDocParamTag : phpDocParamTags) {
+        for (PhpDocTag phpDocParamTag : getTagElementsByNameForAllFrameworks(docComment, "param")) {
             String tagText = phpDocParamTag.getText();
             if (!tagText.contains("$" + parameters[currentParameterIndex].getName())) {
                 continue;
@@ -138,12 +129,8 @@ public class GenericsUtil {
 
         Collection<ParameterArrayType> types = new ArrayList<>();
 
-        Collection<PhpDocTag> returnTags = new HashSet<>();
-        returnTags.addAll(Arrays.asList(docComment.getTagElementsByName("@return")));
-        returnTags.addAll(Arrays.asList(docComment.getTagElementsByName("@psalm-return")));
-
         // workaround for invalid tags lexer on PhpStorm side
-        for (PhpDocTag phpDocTag : returnTags) {
+        for (PhpDocTag phpDocTag : getTagElementsByNameForAllFrameworks(docComment, "return")) {
             String text = phpDocTag.getText();
             Matcher arrayElementsMatcher = Pattern.compile("array\\s*\\{(.*)}\\s*", Pattern.MULTILINE).matcher(text);
             if (arrayElementsMatcher.find()) {
@@ -187,7 +174,7 @@ public class GenericsUtil {
     private static Collection<ParameterArrayType> getParameterArrayTypes(@NotNull PhpDocComment phpDocComment, @NotNull String parameterName) {
         Collection<ParameterArrayType> vars = new ArrayList<>();
 
-        for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName("@psalm-param")) {
+        for (PhpDocTag phpDocTag : getTagElementsByNameForAllFrameworks(phpDocComment, "param")) {
             String tagValue = phpDocTag.getTagValue();
             vars.addAll(GenericsUtil.getParameterArrayTypes(tagValue, parameterName, phpDocTag));
         }
@@ -434,5 +421,12 @@ public class GenericsUtil {
         return phpClasses.size() == 0 ? null : phpClasses.iterator().next();
     }
 
-
+    @NotNull
+    public static PhpDocTag[] getTagElementsByNameForAllFrameworks(@NotNull PhpDocComment phpDocComment, @NotNull String parameterName) {
+        return Stream.of(
+            phpDocComment.getTagElementsByName("@psalm-" + parameterName),
+            phpDocComment.getTagElementsByName("@" + parameterName),
+            phpDocComment.getTagElementsByName("@phpstan-" + parameterName)
+        ).flatMap(Stream::of).toArray(PhpDocTag[]::new);
+    }
 }

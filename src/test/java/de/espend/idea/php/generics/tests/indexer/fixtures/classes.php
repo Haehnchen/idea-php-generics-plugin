@@ -123,4 +123,13 @@ namespace
     function instantiatorReturn(string $class) {
         return new $class();
     }
+
+    /**
+     * @phpstan-template T
+     * @phpstan-param class-string<T> $class
+     * @phpstan-return T
+     */
+    function instantiatorPhpStan(string $class) {
+        return new $class();
+    }
 }
