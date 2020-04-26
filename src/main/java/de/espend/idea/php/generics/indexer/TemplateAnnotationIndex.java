@@ -7,72 +7,61 @@ import com.intellij.util.indexing.*;
 import com.intellij.util.io.DataExternalizer;
 import com.intellij.util.io.EnumeratorStringDescriptor;
 import com.intellij.util.io.KeyDescriptor;
-import com.intellij.util.io.VoidDataExternalizer;
 import com.jetbrains.php.lang.PhpFileType;
+import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
+import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocReturnTag;
+import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocTag;
 import com.jetbrains.php.lang.psi.PhpFile;
+import com.jetbrains.php.lang.psi.elements.Function;
+import com.jetbrains.php.lang.psi.elements.Parameter;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import de.espend.idea.php.annotation.util.AnnotationUtil;
+import de.espend.idea.php.generics.indexer.dict.TemplateAnnotationUsage;
+import de.espend.idea.php.generics.indexer.externalizer.ObjectStreamDataExternalizer;
 import de.espend.idea.php.generics.utils.GenericsUtil;
-import gnu.trove.THashMap;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
-public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Void> {
-    public static final ID<String, Void> KEY = ID.create("de.espend.idea.php.generics.templates");
+/**
+ * @author Daniel Espendiller <daniel@espendiller.net>
+ */
+public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, TemplateAnnotationUsage> {
+    public static final ID<String, TemplateAnnotationUsage> KEY = ID.create("de.espend.idea.php.generics.templates");
     private final KeyDescriptor<String> myKeyDescriptor = new EnumeratorStringDescriptor();
+    private static ObjectStreamDataExternalizer<TemplateAnnotationUsage> EXTERNALIZER = new ObjectStreamDataExternalizer<>();
 
     @NotNull
     @Override
-    public ID<String, Void> getName() {
+    public ID<String, TemplateAnnotationUsage> getName() {
         return KEY;
     }
 
     @NotNull
     @Override
-    public DataIndexer<String, Void, FileContent> getIndexer() {
-        return new DataIndexer<String, Void, FileContent>() {
-            @NotNull
-            @Override
-            public Map<String, Void> map(@NotNull FileContent inputData) {
-                final Map<String, Void> map = new THashMap<>();
+    public DataIndexer<String, TemplateAnnotationUsage, FileContent> getIndexer() {
+        return inputData -> {
+            final Map<String, TemplateAnnotationUsage> map = new HashMap<>();
 
-                PsiFile psiFile = inputData.getPsiFile();
-                if(!(psiFile instanceof PhpFile)) {
-                    return map;
-                }
-
-                if(!AnnotationUtil.isValidForIndex(inputData)) {
-                    return map;
-                }
-
-                psiFile.accept(new PsiRecursiveElementWalkingVisitor() {
-                    @Override
-                    public void visitElement(PsiElement element) {
-                        if ((element instanceof PhpClass)) {
-                            visitPhpClass((PhpClass) element);
-                        }
-
-                        super.visitElement(element);
-                    }
-
-                    private void visitPhpClass(PhpClass phpClass) {
-                        String fqn = phpClass.getFQN();
-                        if(fqn.startsWith("\\")) {
-                            fqn = fqn.substring(1);
-                        }
-
-                        // doctrine has many tests: Doctrine\Tests\Common\Annotations\Fixtures
-                        // we are on index process, project is not fully loaded here, so filter name based tests
-                        // eg PhpUnitUtil.isTestClass not possible
-                        if (!fqn.contains("\\Tests\\") && !fqn.contains("\\Fixtures\\") && GenericsUtil.isGenericsClass(phpClass)) {
-                            map.put(fqn, null);
-                        }
-                    }
-                });
-
+            PsiFile psiFile = inputData.getPsiFile();
+            if (!(psiFile instanceof PhpFile)) {
                 return map;
             }
+
+            if (!AnnotationUtil.isValidForIndex(inputData)) {
+                return map;
+            }
+
+            psiFile.accept(new MyPsiRecursiveElementWalkingVisitor(map));
+
+            return map;
         };
     }
 
@@ -84,8 +73,8 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Voi
 
     @NotNull
     @Override
-    public DataExternalizer<Void> getValueExternalizer() {
-        return VoidDataExternalizer.INSTANCE;
+    public DataExternalizer<TemplateAnnotationUsage> getValueExternalizer() {
+        return EXTERNALIZER;
     }
 
     @Override
@@ -102,5 +91,115 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Voi
     @Override
     public boolean dependsOnFileContent() {
         return true;
+    }
+
+    private static class MyPsiRecursiveElementWalkingVisitor extends PsiRecursiveElementWalkingVisitor {
+        private final Map<String, TemplateAnnotationUsage> map;
+
+        public MyPsiRecursiveElementWalkingVisitor(Map<String, TemplateAnnotationUsage> map) {
+            this.map = map;
+        }
+
+        @Override
+        public void visitElement(@NotNull PsiElement element) {
+            if (element instanceof PhpClass) {
+                visitPhpClass((PhpClass) element);
+            } else if (element instanceof Function) {
+                visitPhpClass((Function) element);
+            }
+
+            super.visitElement(element);
+        }
+
+        private void visitPhpClass(PhpClass phpClass) {
+            String fqn = phpClass.getFQN();
+            if(fqn.startsWith("\\")) {
+                fqn = fqn.substring(1);
+            }
+
+            // doctrine has many tests: Doctrine\Tests\Common\Annotations\Fixtures
+            // we are on index process, project is not fully loaded here, so filter name based tests
+            // eg PhpUnitUtil.isTestClass not possible
+            if (!fqn.contains("\\Tests\\") && !fqn.contains("\\Fixtures\\") && GenericsUtil.isGenericsClass(phpClass)) {
+                map.put(fqn, new TemplateAnnotationUsage(fqn, TemplateAnnotationUsage.Type.CONSTRUCTOR, 0));
+            }
+        }
+
+        private void visitPhpClass(Function function) {
+            for (String docBlock : Arrays.asList("@template", "@psalm-template")) {
+                PhpDocComment phpDocComment = function.getDocComment();
+                if (phpDocComment == null) {
+                    continue;
+                }
+
+                for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName(docBlock)) {
+                    // @template T
+                    String templateName = StringUtils.trim(phpDocTag.getTagValue());
+                    if (StringUtils.isBlank(templateName) || !templateName.matches("\\w+")) {
+                        continue;
+                    }
+
+                    // return doctag must match: "@return T"
+                    if (!hasReturnTypeTemplate(phpDocComment, templateName)) {
+                        continue;
+                    }
+
+                    // get possible tags
+                    PhpDocTag[] phpDocTags = Stream.concat(
+                        Arrays.stream(phpDocComment.getTagElementsByName("@psalm-param")),
+                        Arrays.stream(phpDocComment.getTagElementsByName("@param"))
+                    ).toArray(PhpDocTag[]::new);
+
+                    for (PhpDocTag docTag : phpDocTags) {
+                        String psalmParamTag = docTag.getTagValue();
+                        Pattern pattern = Pattern.compile("class-string<" + Pattern.quote(templateName) + ">.*\\$([\\w-]+)");
+
+                        Matcher matcher = pattern.matcher(psalmParamTag);
+                        if (!matcher.find()) {
+                            continue;
+                        }
+
+                        String parameterName = matcher.group(1);
+                        Parameter[] parameters = function.getParameters();
+
+                        for (int i = 0; i < parameters.length; i++) {
+                            Parameter parameter = parameters[i];
+                            String name = parameter.getName();
+                            if (name.equalsIgnoreCase(parameterName)) {
+                                String fqn = function.getFQN();
+
+                                map.put(fqn, new TemplateAnnotationUsage(fqn, TemplateAnnotationUsage.Type.FUNCTION_CLASS_STRING, i));
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /**
+         * For for the given template name as a return value
+         *
+         * "@return T"
+         * "@psalm-return T"
+         */
+        private boolean hasReturnTypeTemplate(@NotNull PhpDocComment phpDocComment, @NotNull String templateName) {
+            // search for main "@return"
+            PhpDocReturnTag returnTag = phpDocComment.getReturnTag();
+            // getTagValue is not working so we need to check with with text
+            if (returnTag != null && returnTag.getText().matches("@return\\s+" + Pattern.quote(templateName))) {
+                return true;
+            }
+
+            // fallback to @psalm-return
+            for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName("@psalm-return")) {
+                if (StringUtils.trim(phpDocTag.getTagValue()).equals(templateName)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

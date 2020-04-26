@@ -18,9 +18,26 @@ Changelog   | [CHANGELOG](CHANGELOG.md)
 
 ## Supported
 
+### types
+
+```php
+/**
+ * @[psalm-]template T
+ * @[psalm-]param class-string<T> $class
+ * @[psalm-]return T
+ */
+function instantiator(string $class) {
+    return new $class();
+}
+
+class Foo {}
+
+$a = instantiator(Foo::class); // Psalm knows the result is an object of type Foo
+```
+
 ### class-string
 
- * Inspections
+ * Inspections for not given wrong parameter
 
 ```php
     /**
