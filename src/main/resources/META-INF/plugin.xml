@@ -25,7 +25,7 @@
 
   ]]></description>
 
-  <idea-version since-build="182.0"/>
+  <idea-version since-build="193.1159"/>
 
   <extensions defaultExtensionNs="com.intellij">
     <fileBasedIndex implementation="de.espend.idea.php.generics.indexer.TemplateAnnotationIndex"/>
@@ -47,6 +47,9 @@
     <gotoDeclarationHandler implementation="de.espend.idea.php.generics.CompletionNavigationProvider$GotoDeclaration"/>
   </extensions>
 
+  <extensions defaultExtensionNs="com.jetbrains.php">
+    <typeProvider4 implementation="de.espend.idea.php.generics.type.TemplateAnnotationTypeProvider"/>
+  </extensions>
 
   <actions>
     <!-- Add your actions here -->

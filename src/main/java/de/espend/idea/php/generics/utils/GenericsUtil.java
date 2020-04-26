@@ -433,4 +433,6 @@ public class GenericsUtil {
         Collection<PhpClass> phpClasses = PhpIndex.getInstance(project).getAnyByFQN(className);
         return phpClasses.size() == 0 ? null : phpClasses.iterator().next();
     }
+
+
 }

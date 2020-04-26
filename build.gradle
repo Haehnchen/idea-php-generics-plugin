@@ -28,7 +28,7 @@ intellij {
 }
 
 patchPluginXml {
-    sinceBuild '192.6603'
+    sinceBuild '193.1159'
     changeNotes = htmlFixer('src/main/resources/META-INF/change-notes.html')
 }
 
