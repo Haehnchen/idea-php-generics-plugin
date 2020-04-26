@@ -4,6 +4,10 @@ Changelog
 # Version names
 * 0.x.x: PhpStorm 2019.1+
 
+## 0.4.0
+* Wrap all doc tag calls into support al suffixes from static frameworks (Daniel Espendiller)
+* Provide psalm return type based on class-string return type templates (Daniel Espendiller)
+
 ## 0.3.1
 * Just guessing this will fix Issue [#11](https://github.com/Haehnchen/idea-php-generics-plugin/issues/11) [#10](https://github.com/Haehnchen/idea-php-generics-plugin/issues/10) (HenkPoley)
 
