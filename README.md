@@ -22,9 +22,9 @@ Changelog   | [CHANGELOG](CHANGELOG.md)
 
 ```php
 /**
- * @[psalm-]template T
- * @[psalm-]param class-string<T> $class
- * @[psalm-]return T
+ * @[psalm-|phpstan-]template T
+ * @[psalm-|phpstan-]param class-string<T> $class
+ * @[psalm-|phpstan-]return T
  */
 function instantiator(string $class) {
     return new $class();
@@ -41,8 +41,8 @@ $a = instantiator(Foo::class); // Psalm knows the result is an object of type Fo
 
 ```php
     /**
-     * @[psalm-]template T as Exception
-     * @[psalm-]param T::class $type
+     * @[psalm-|phpstan-]template T as Exception
+     * @[psalm-|phpstan-]param T::class $type
      * @return T
      */
     function a(string $type): Exception
@@ -62,7 +62,7 @@ https://psalm.dev/docs/annotating_code/type_syntax/array_types/
 
 ```php
     /**
-     * @[psalm-]param array{foo: string, bar: int} $type
+     * @[psalm-|phpstan-]param array{foo: string, bar: int} $type
      */
     function a(array $type): Exception
     {
