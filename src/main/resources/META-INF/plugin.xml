@@ -37,7 +37,7 @@
                      language="PHP"
                      implementationClass="de.espend.idea.php.generics.inspection.ClassStringLocalInspection"/>
 
-    <localInspection groupPath="Generics" shortName="PsalmLocalImmutableInspection" displayName="Route missing"
+    <localInspection groupPath="Generics" shortName="PsalmLocalImmutableInspection" displayName="Psalm Local Immutable"
                      groupName="Class"
                      enabledByDefault="true" level="WARNING"
                      language="PHP"
