@@ -1,4 +1,4 @@
-# IntelliJ IDEA / PhpStorm PHPStan / Pslam / Generics
+# IntelliJ IDEA / PhpStorm PHPStan / Psalm / Generics
 
 [![Build Status](https://travis-ci.org/Haehnchen/idea-php-generics-plugin.svg?branch=master)](https://travis-ci.org/Haehnchen/idea-php-generics-plugin)
 [![Version](http://phpstorm.espend.de/badge/12754/version)](https://plugins.jetbrains.com/plugin/12754)
