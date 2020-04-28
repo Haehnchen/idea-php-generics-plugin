@@ -4,6 +4,13 @@ Changelog
 # Version names
 * 0.x.x: PhpStorm 2019.1+
 
+## 0.5.0
+* Add support for Psalm in quality tools inspection (Daniel Espendiller)
+* Provide plugin icon (Daniel Espendiller)
+* Add support for PHPStan in quality tools inspection (Daniel Espendiller)
+* Create description file / Change label for inspections (orklah)
+* Add phpstan suffix support for all docblock (Daniel Espendiller)
+
 ## 0.4.0
 * Wrap all doc tag calls into support al suffixes from static frameworks (Daniel Espendiller)
 * Provide psalm return type based on class-string return type templates (Daniel Espendiller)
