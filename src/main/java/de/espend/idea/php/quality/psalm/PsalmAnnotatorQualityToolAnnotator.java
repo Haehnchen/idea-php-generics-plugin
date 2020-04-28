@@ -41,6 +41,17 @@ public class PsalmAnnotatorQualityToolAnnotator extends QualityToolAnnotator {
             protected Configurable getToolConfigurable(@NotNull Project project) {
                 return new PsalmValidatorConfigurable(project);
             }
+
+            @Override
+            protected String getMessagePrefix() {
+                return "pslam";
+            }
+
+            @NotNull
+            @Override
+            protected String getQuickFixFamilyName() {
+                return "Pslam";
+            }
         };
     }
 
