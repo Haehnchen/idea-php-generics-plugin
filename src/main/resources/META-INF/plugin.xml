@@ -46,13 +46,13 @@
     <completion.contributor language="PHP" implementationClass="de.espend.idea.php.generics.CompletionNavigationProvider$Completion"/>
     <gotoDeclarationHandler implementation="de.espend.idea.php.generics.CompletionNavigationProvider$GotoDeclaration"/>
 
+    <!-- PHPStan quality tool support -->
     <applicationService serviceImplementation="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfigurationManager$AppPhpStanValidatorConfigurationBaseManager"/>
     <projectService serviceImplementation="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfigurationManager"/>
     <projectService serviceImplementation="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfigurationManager$ProjectPhpStanValidatorConfigurationBaseManager"/>
     <externalAnnotator language="PHP" implementationClass="de.espend.idea.php.quality.phpstan.PhpStanAnnotatorQualityToolAnnotator"/>
     <projectService serviceImplementation="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorProjectConfiguration"/>
     <projectService serviceImplementation="de.espend.idea.php.quality.phpstan.blacklist.PhpStanValidatorBlackList"/>
-
     <localInspection language="PHP"
                      shortName="PhpStanFixerValidation"
                      displayName="PHPStan Fixer validation"
@@ -62,14 +62,37 @@
                      level="WEAK WARNING"
                      cleanupTool="true"
                      implementationClass="de.espend.idea.php.quality.phpstan.PhpStanFixerValidationInspection"/>
+
+    <!-- Psalm quality tool support -->
+    <applicationService serviceImplementation="de.espend.idea.php.quality.psalm.configuration.PsalmValidatorConfigurationManager$AppPsalmValidatorConfigurationBaseManager"/>
+    <projectService serviceImplementation="de.espend.idea.php.quality.psalm.configuration.PsalmValidatorConfigurationManager"/>
+    <projectService serviceImplementation="de.espend.idea.php.quality.psalm.configuration.PsalmValidatorConfigurationManager$ProjectPsalmValidatorConfigurationBaseManager"/>
+    <externalAnnotator language="PHP" implementationClass="de.espend.idea.php.quality.psalm.PsalmAnnotatorQualityToolAnnotator"/>
+    <projectService serviceImplementation="de.espend.idea.php.quality.psalm.configuration.PsalmValidatorProjectConfiguration"/>
+    <projectService serviceImplementation="de.espend.idea.php.quality.psalm.blacklist.PsalmValidatorBlackList"/>
+    <localInspection language="PHP"
+                     shortName="PsalmValidation"
+                     displayName="Psalm validation"
+                     groupPath="PHP"
+                     groupName="Quality tools"
+                     enabledByDefault="false"
+                     level="WEAK WARNING"
+                     cleanupTool="true"
+                     implementationClass="de.espend.idea.php.quality.psalm.PsalmValidationInspection"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.jetbrains.php">
     <typeProvider4 implementation="de.espend.idea.php.generics.type.TemplateAnnotationTypeProvider"/>
 
+    <!-- PHPStan quality tool support -->
     <tools.quality.type implementation="de.espend.idea.php.quality.phpstan.PhpStanQualityToolType"/>
     <tools.projectConfigurableForm instance="de.espend.idea.php.quality.phpstan.form.PhpStanValidatorConfigurable"/>
     <config.interpreters.PhpInterpretersStateListener implementation="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfigurationManager"/>
+
+    <!-- Psalm quality tool support -->
+    <tools.quality.type implementation="de.espend.idea.php.quality.psalm.PsalmQualityToolType"/>
+    <tools.projectConfigurableForm instance="de.espend.idea.php.quality.psalm.form.PsalmValidatorConfigurable"/>
+    <config.interpreters.PhpInterpretersStateListener implementation="de.espend.idea.php.quality.psalm.configuration.PsalmValidatorConfigurationManager"/>
   </extensions>
 
   <actions>
