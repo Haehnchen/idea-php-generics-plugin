@@ -1,4 +1,4 @@
-# IntelliJ IDEA / PhpStorm PHP Generics
+# IntelliJ IDEA / PhpStorm PHPStan / Pslam / Generics
 
 [![Build Status](https://travis-ci.org/Haehnchen/idea-php-generics-plugin.svg?branch=master)](https://travis-ci.org/Haehnchen/idea-php-generics-plugin)
 [![Version](http://phpstorm.espend.de/badge/12754/version)](https://plugins.jetbrains.com/plugin/12754)
@@ -96,6 +96,10 @@ Follows into errors hints
 (new PsalmReadOnly())->readOnly = 'test';
 (new PsalmImmutable())->readOnly = 'test';
 ```
+
+## Quality Tools
+
+Provides support for quality tools inspection via directly call PHPStan or Psalm reporting via `codestyle` format
 
 ## Limitation / Issues
 
