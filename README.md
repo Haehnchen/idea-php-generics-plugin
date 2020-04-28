@@ -110,6 +110,7 @@ Provides support for quality tools inspection via directly call PHPStan or Psalm
  ![class-string](https://plugins.jetbrains.com/files/12754/screenshot_20052.png)
  ![Object-like arrays](https://plugins.jetbrains.com/files/12754/screenshot_21124.png)
  ![Psalm Immutable](https://plugins.jetbrains.com/files/12754/screenshot_21166.png)
+ ![Quality Tool](https://plugins.jetbrains.com/files/12754/screenshot_21656.png)
 
 ## TODO
 
