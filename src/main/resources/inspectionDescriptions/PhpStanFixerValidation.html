@@ -1,0 +1,18 @@
+<html>
+<body>
+<p>Reports static code problems detected by PHPStan via PHPStan executable file</p>
+<!-- tooltip end -->
+<p>
+    The inspection requires PHPStan to be properly installed and set up in the IDE under Settings/Preferences | Languages & Frameworks | PHP | Quality Tools | PHPStan.
+    It is recommended to install PHPStan either as a Composer dependency or globally.
+    <br>
+    PHPStan needs to be configured fully via <a href="https://phpstan.org/config-reference">phpstan.neon</a>, also with a <b>level</b> so that <b>.../phpstan analyse YOUR_FILE</b> is working:
+    <br>
+</p>
+<pre style="white-space:pre-wrap; word-wrap:break-word;">
+# phpstan.neon
+parameters:
+   level: 2
+</pre>
+</body>
+</html>

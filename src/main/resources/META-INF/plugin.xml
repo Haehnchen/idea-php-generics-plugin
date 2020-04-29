@@ -57,7 +57,7 @@
     <projectService serviceImplementation="de.espend.idea.php.quality.phpstan.blacklist.PhpStanValidatorBlackList"/>
     <localInspection language="PHP"
                      shortName="PhpStanFixerValidation"
-                     displayName="PHPStan Fixer validation"
+                     displayName="PHPStan validation"
                      groupPath="PHP"
                      groupName="Quality tools"
                      enabledByDefault="false"
