@@ -27,7 +27,7 @@
 
   ]]></description>
 
-  <idea-version since-build="193.1159"/>
+  <idea-version since-build="201.6668"/>
 
   <extensions defaultExtensionNs="com.intellij">
     <fileBasedIndex implementation="de.espend.idea.php.generics.indexer.TemplateAnnotationIndex"/>
