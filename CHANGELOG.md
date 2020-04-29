@@ -4,6 +4,11 @@ Changelog
 # Version names
 * 0.x.x: PhpStorm 2019.1+
 
+## 0.5.1
+* Provide inspection description on how to configure PHPStan (Daniel Espendiller)
+* Update since build to drop older PhpStorm versions which are not supported (Daniel Espendiller)
+* Fix wrong prefix for inspection (Daniel Espendiller)
+
 ## 0.5.0
 * Add support for Psalm in quality tools inspection (Daniel Espendiller)
 * Provide plugin icon (Daniel Espendiller)
