@@ -33,11 +33,8 @@ public class PhpStanValidatorConfigurableForm<C extends PhpStanValidatorConfigur
 
     @NotNull
     public Pair<Boolean, String> validateMessage(String message) {
-        // "PHPStan - PHP Static Analysis Tool 0.12.19"
-        Version version = extractVersion(message.replaceFirst(".* ([\\d.]*).*", "$1").trim());
-
         return message.contains("PHPStan")
-            ? Pair.create(true, "OK, Version " + (version != null ? version : "n/a"))
+            ? Pair.create(true, "OK, " + message)
             : Pair.create(false, message);
     }
 
