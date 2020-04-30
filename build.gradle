@@ -17,6 +17,7 @@ intellij {
     updateSinceUntilBuild false
     plugins = [
             "com.jetbrains.php:${phpPluginVersion}",
+            "org.jetbrains.plugins.phpstorm-remote-interpreter:${phpRemoteInterpreter}",
             "de.espend.idea.php.annotation:${annotationPluginVersion}",
             'CSS',
             'java-i18n',
