@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class PsalmValidatorConfiguration implements QualityToolConfiguration {
     private static final String LOCAL = "Local";
-    private String myPhpCSFixerPath = "";
+    private String myPsalmPath = "";
     private String myStandards = "";
     private int myMaxMessagesPerFile = 50;
     private int myTimeoutMs = 5000;
@@ -27,21 +27,21 @@ public class PsalmValidatorConfiguration implements QualityToolConfiguration {
 
     @Transient
     public String getToolPath() {
-        return this.myPhpCSFixerPath;
+        return this.myPsalmPath;
     }
 
     public void setToolPath(String toolPath) {
-        this.myPhpCSFixerPath = toolPath;
+        this.myPsalmPath = toolPath;
     }
 
     @Attribute("tool_path")
     @Nullable
     public String getSerializedToolPath() {
-        return this.serialize(this.myPhpCSFixerPath);
+        return this.serialize(this.myPsalmPath);
     }
 
     public void setSerializedToolPath(@Nullable String configurationFilePath) {
-        this.myPhpCSFixerPath = this.deserialize(configurationFilePath);
+        this.myPsalmPath = this.deserialize(configurationFilePath);
     }
 
     @Attribute("max_messages_per_file")
@@ -89,7 +89,7 @@ public class PsalmValidatorConfiguration implements QualityToolConfiguration {
 
     @NotNull
     public String getId() {
-        return "Local";
+        return LOCAL;
     }
 
     @Nullable
@@ -104,7 +104,7 @@ public class PsalmValidatorConfiguration implements QualityToolConfiguration {
     }
 
     public void clone(@NotNull PsalmValidatorConfiguration settings) {
-        settings.myPhpCSFixerPath = this.myPhpCSFixerPath;
+        settings.myPsalmPath = this.myPsalmPath;
         settings.myStandards = this.myStandards;
         settings.myMaxMessagesPerFile = this.myMaxMessagesPerFile;
         settings.myTimeoutMs = this.myTimeoutMs;
@@ -113,10 +113,10 @@ public class PsalmValidatorConfiguration implements QualityToolConfiguration {
     public int compareTo(@NotNull QualityToolConfiguration o) {
         if (!(o instanceof PsalmValidatorConfiguration)) {
             return 1;
-        } else if (StringUtil.equals(this.getPresentableName(null), "Local")) {
+        } else if (StringUtil.equals(this.getPresentableName(null), LOCAL)) {
             return -1;
         } else {
-            return StringUtil.equals(o.getPresentableName(null), "Local") ? 1 : StringUtil.compare(this.getPresentableName(null), o.getPresentableName(null), false);
+            return StringUtil.equals(o.getPresentableName(null), LOCAL) ? 1 : StringUtil.compare(this.getPresentableName(null), o.getPresentableName(null), false);
         }
     }
 }

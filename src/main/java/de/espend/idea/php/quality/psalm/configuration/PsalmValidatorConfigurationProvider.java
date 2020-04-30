@@ -11,8 +11,6 @@ import org.jetbrains.annotations.Nullable;
  * @author Daniel Espendiller <daniel@espendiller.net>
  */
 public abstract class PsalmValidatorConfigurationProvider extends QualityToolConfigurationProvider<PsalmValidatorConfiguration> {
-    private static final ExtensionPointName<PsalmValidatorConfigurationProvider> EP_NAME = ExtensionPointName.create("com.jetbrains.php.tools.quality.phpcs.phpCSConfigurationProvider");
-
     @Nullable
     public static PsalmValidatorConfigurationProvider getInstances() {
         return null;

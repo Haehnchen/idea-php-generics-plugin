@@ -33,7 +33,7 @@ abstract public class CheckstyleQualityToolMessageProcessor extends QualityToolX
     }
 
     protected XMLMessageHandler getXmlMessageHandler() {
-        return new CheckstylePhpCsXmlMessageHandler();
+        return new CheckstyleXmlMessageHandler();
     }
 
     public int getMessageStart(@NotNull String line) {
@@ -78,7 +78,7 @@ abstract public class CheckstyleQualityToolMessageProcessor extends QualityToolX
      *
      * <error line="8" column="1" severity="error" message="Undefined variable: $td" />
      */
-    private static class CheckstylePhpCsXmlMessageHandler extends XMLMessageHandler {
+    private static class CheckstyleXmlMessageHandler extends XMLMessageHandler {
         private String message;
 
         protected void parseTag(@NotNull String tagName, @NotNull Attributes attributes) {
