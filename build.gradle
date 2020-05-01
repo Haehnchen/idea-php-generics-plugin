@@ -19,6 +19,7 @@ intellij {
             "com.jetbrains.php:${phpPluginVersion}",
             "org.jetbrains.plugins.phpstorm-remote-interpreter:${phpRemoteInterpreter}",
             "de.espend.idea.php.annotation:${annotationPluginVersion}",
+            // "org.jetbrains.plugins.phpstorm-docker:201.6668.60", // for remote interpreter testing
             'CSS',
             'java-i18n',
             'properties',
