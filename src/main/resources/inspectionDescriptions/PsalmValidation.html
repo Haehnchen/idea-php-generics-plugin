@@ -1,0 +1,33 @@
+<html>
+<body>
+<p>Reports static code problems detected by Psalm via executable file</p>
+<!-- tooltip end -->
+<p>
+    The inspection requires Psalm to be properly installed and set up in the IDE under Settings/Preferences | Languages & Frameworks | PHP | Quality Tools | Psalm.
+    It is recommended to install Psalm either as a Composer dependency or globally.
+    <br>
+    PHPStan needs to be configured fully via <a href="https://psalm.dev/docs/running_psalm/installation/">psalm.xml</a> so that <b>.../psalm YOUR_FILE</b> is working:
+    <br>
+</p>
+<pre style="white-space:pre-wrap; word-wrap:break-word;">
+    # psalm.xml
+        &lt;![CDATA[
+    &lt;?xml version=&quot;1.0&quot;?&gt;
+    &lt;psalm
+            totallyTyped=&quot;true&quot;
+            errorLevel=&quot;1&quot;
+            resolveFromConfigFile=&quot;true&quot;
+            xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+            xmlns=&quot;https://getpsalm.org/schema/config&quot;
+            xsi:schemaLocation=&quot;https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd&quot;
+    &gt;
+    &lt;projectFiles&gt;
+        &lt;directory name=&quot;src&quot; /&gt;
+        &lt;ignoreFiles&gt;
+            &lt;directory name=&quot;vendor&quot; /&gt;
+        &lt;/ignoreFiles&gt;
+    &lt;/projectFiles&gt;
+    &lt;/psalm&gt;
+</pre>
+</body>
+</html>
