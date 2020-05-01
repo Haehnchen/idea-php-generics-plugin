@@ -76,7 +76,7 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
 
     @Override
     public int getVersion() {
-        return 1;
+        return 2;
     }
 
     @NotNull
