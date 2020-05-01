@@ -2,7 +2,19 @@ Changelog
 =========
 
 # Version names
-* 0.x.x: PhpStorm 2019.1+
+* 0.x.x: PhpStorm 2020.1+
+
+## 0.6.0
+* Provide Psalm inspection description (Daniel Espendiller)
+* Higher index version for data object usages since last version (Daniel Espendiller)
+* Support remote working directory resolving for quality tools (Daniel Espendiller)
+* Psalm remote interpreter (Daniel Espendiller)
+* Remove phpcs references (dbrekelmans)
+* Fix psalm typo (dbrekelmans)
+* Add remote interpreter support for PhpStan quality tool (Daniel Espendiller)
+* Show full message output on quality tool checking for PHPStan (Daniel Espendiller)
+* Fix possible ArrayIndexOutOfBoundsException in type resolving (Daniel Espendiller)
+* Update README.md (Andrew Kovalyov)
 
 ## 0.5.1
 * Provide inspection description on how to configure PHPStan (Daniel Espendiller)
