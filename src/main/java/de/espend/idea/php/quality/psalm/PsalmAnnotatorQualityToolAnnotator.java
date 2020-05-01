@@ -45,13 +45,13 @@ public class PsalmAnnotatorQualityToolAnnotator extends QualityToolAnnotator {
 
             @Override
             protected String getMessagePrefix() {
-                return "pslam";
+                return "psalm";
             }
 
             @NotNull
             @Override
             protected String getQuickFixFamilyName() {
-                return "Pslam";
+                return "Psalm";
             }
         };
     }
