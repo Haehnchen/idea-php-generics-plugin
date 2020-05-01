@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class PhpStanValidatorConfiguration implements QualityToolConfiguration {
     private static final String LOCAL = "Local";
-    private String myPhpCSFixerPath = "";
+    private String myPHPStanPath = "";
     private String myStandards = "";
     private int myMaxMessagesPerFile = 50;
     private int myTimeoutMs = 5000;
@@ -27,21 +27,21 @@ public class PhpStanValidatorConfiguration implements QualityToolConfiguration {
 
     @Transient
     public String getToolPath() {
-        return this.myPhpCSFixerPath;
+        return this.myPHPStanPath;
     }
 
     public void setToolPath(String toolPath) {
-        this.myPhpCSFixerPath = toolPath;
+        this.myPHPStanPath = toolPath;
     }
 
     @Attribute("tool_path")
     @Nullable
     public String getSerializedToolPath() {
-        return this.serialize(this.myPhpCSFixerPath);
+        return this.serialize(this.myPHPStanPath);
     }
 
     public void setSerializedToolPath(@Nullable String configurationFilePath) {
-        this.myPhpCSFixerPath = this.deserialize(configurationFilePath);
+        this.myPHPStanPath = this.deserialize(configurationFilePath);
     }
 
     @Attribute("max_messages_per_file")
@@ -104,7 +104,7 @@ public class PhpStanValidatorConfiguration implements QualityToolConfiguration {
     }
 
     public void clone(@NotNull PhpStanValidatorConfiguration settings) {
-        settings.myPhpCSFixerPath = this.myPhpCSFixerPath;
+        settings.myPHPStanPath = this.myPHPStanPath;
         settings.myStandards = this.myStandards;
         settings.myMaxMessagesPerFile = this.myMaxMessagesPerFile;
         settings.myTimeoutMs = this.myTimeoutMs;
