@@ -84,7 +84,8 @@
   </extensions>
 
   <extensionPoints>
-    <extensionPoint qualifiedName="de.espend.idea.php.quality.phpstan.PhpStanConfigurationProvider" interface="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfigurationProvider"/>
+    <extensionPoint qualifiedName="de.espend.idea.php.quality.phpstan.phpStanConfigurationProvider" interface="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfigurationProvider"/>
+    <extensionPoint qualifiedName="de.espend.idea.php.quality.psalm.psalmConfigurationProvider" interface="de.espend.idea.php.quality.psalm.configuration.PsalmValidatorConfigurationProvider"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.jetbrains.php">

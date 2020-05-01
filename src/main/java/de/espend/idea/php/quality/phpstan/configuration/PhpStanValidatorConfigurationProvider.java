@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Daniel Espendiller <daniel@espendiller.net>
  */
 public abstract class PhpStanValidatorConfigurationProvider extends QualityToolConfigurationProvider<PhpStanValidatorConfiguration> {
-    private static final ExtensionPointName<PhpStanValidatorConfigurationProvider> EP_NAME = ExtensionPointName.create("de.espend.idea.php.quality.phpstan.PhpStanConfigurationProvider");
+    private static final ExtensionPointName<PhpStanValidatorConfigurationProvider> EP_NAME = ExtensionPointName.create("de.espend.idea.php.quality.phpstan.phpStanConfigurationProvider");
 
     @Nullable
     public static PhpStanValidatorConfigurationProvider getInstances() {
