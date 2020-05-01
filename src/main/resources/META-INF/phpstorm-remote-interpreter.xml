@@ -1,0 +1,6 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="de.espend.idea.php.quality">
+        <phpstan.phpStanConfigurationProvider implementation="de.espend.idea.php.quality.phpstan.remote.PhpStanValidatorRemoteConfigurationProvider"/>
+        <psalm.psalmConfigurationProvider implementation="de.espend.idea.php.quality.psalm.remote.PsalmValidatorRemoteConfigurationProvider"/>
+    </extensions>
+</idea-plugin>

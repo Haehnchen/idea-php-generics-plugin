@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.jetbrains.php.config.interpreters.PhpSdkFileTransfer;
 import com.jetbrains.php.tools.quality.*;
 import de.espend.idea.php.quality.CheckstyleQualityToolMessageProcessor;
+import de.espend.idea.php.quality.QualityToolUtil;
 import de.espend.idea.php.quality.psalm.blacklist.PsalmValidatorBlackList;
 import de.espend.idea.php.quality.psalm.configuration.PsalmValidatorProjectConfiguration;
 import de.espend.idea.php.quality.psalm.form.PsalmValidatorConfigurable;
@@ -44,13 +45,13 @@ public class PsalmAnnotatorQualityToolAnnotator extends QualityToolAnnotator {
 
             @Override
             protected String getMessagePrefix() {
-                return "pslam";
+                return "psalm";
             }
 
             @NotNull
             @Override
             protected String getQuickFixFamilyName() {
-                return "Pslam";
+                return "Psalm";
             }
         };
     }
@@ -58,7 +59,9 @@ public class PsalmAnnotatorQualityToolAnnotator extends QualityToolAnnotator {
     protected void runTool(@NotNull QualityToolMessageProcessor messageProcessor, @NotNull QualityToolAnnotatorInfo annotatorInfo, @NotNull PhpSdkFileTransfer transfer) throws ExecutionException {
         List<String> params = getCommandLineOptions(annotatorInfo.getFilePath());
         PsalmValidatorBlackList blackList = PsalmValidatorBlackList.getInstance(annotatorInfo.getProject());
-        QualityToolProcessCreator.runToolProcess(annotatorInfo, blackList, messageProcessor, annotatorInfo.getProject().getBasePath(), transfer, params);
+
+        String workingDir = QualityToolUtil.getWorkingDirectoryFromAnnotator(annotatorInfo);
+        QualityToolProcessCreator.runToolProcess(annotatorInfo, blackList, messageProcessor, workingDir, transfer, params);
         if (messageProcessor.getInternalErrorMessage() != null) {
             if (annotatorInfo.isOnTheFly()) {
                 String message = messageProcessor.getInternalErrorMessage().getMessageText();

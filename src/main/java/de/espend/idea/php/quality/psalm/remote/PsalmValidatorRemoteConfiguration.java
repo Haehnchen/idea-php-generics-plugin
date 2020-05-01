@@ -1,4 +1,4 @@
-package de.espend.idea.php.quality.phpstan.remote;
+package de.espend.idea.php.quality.psalm.remote;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -6,15 +6,15 @@ import com.intellij.util.xmlb.annotations.Attribute;
 import com.intellij.util.xmlb.annotations.Tag;
 import com.jetbrains.php.config.interpreters.PhpInterpretersManagerImpl;
 import com.jetbrains.php.config.interpreters.PhpSdkDependentConfiguration;
-import de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfiguration;
+import de.espend.idea.php.quality.psalm.configuration.PsalmValidatorConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Daniel Espendiller <daniel@espendiller.net>
  */
-@Tag("phpstan_by_interpreter")
-public class PhpStanValidatorRemoteConfiguration extends PhpStanValidatorConfiguration implements PhpSdkDependentConfiguration {
+@Tag("psalm_by_interpreter")
+public class PsalmValidatorRemoteConfiguration extends PsalmValidatorConfiguration implements PhpSdkDependentConfiguration {
     private String myInterpreterId;
 
     @Attribute("interpreter_id")
@@ -44,8 +44,8 @@ public class PhpStanValidatorRemoteConfiguration extends PhpStanValidatorConfigu
         return StringUtil.isEmpty(interpreterName) ? "Undefined interpreter" : "Interpreter: " + interpreterName;
     }
 
-    public PhpStanValidatorRemoteConfiguration clone() {
-        PhpStanValidatorRemoteConfiguration settings = new PhpStanValidatorRemoteConfiguration();
+    public PsalmValidatorRemoteConfiguration clone() {
+        PsalmValidatorRemoteConfiguration settings = new PsalmValidatorRemoteConfiguration();
         settings.myInterpreterId = this.myInterpreterId;
         this.clone(settings);
         return settings;

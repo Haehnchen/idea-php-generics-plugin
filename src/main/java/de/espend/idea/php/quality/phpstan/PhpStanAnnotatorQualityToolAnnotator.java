@@ -4,9 +4,13 @@ import com.intellij.codeInspection.LocalInspectionTool;
 import com.intellij.execution.ExecutionException;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.util.PathUtil;
 import com.jetbrains.php.config.interpreters.PhpSdkFileTransfer;
 import com.jetbrains.php.tools.quality.*;
+import com.jetbrains.php.tools.quality.phpCSFixer.PhpCSFixerValidationInspection;
 import de.espend.idea.php.quality.CheckstyleQualityToolMessageProcessor;
+import de.espend.idea.php.quality.QualityToolUtil;
 import de.espend.idea.php.quality.phpstan.blacklist.PhpStanValidatorBlackList;
 import de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorProjectConfiguration;
 import de.espend.idea.php.quality.phpstan.form.PhpStanValidatorConfigurable;
@@ -47,7 +51,9 @@ public class PhpStanAnnotatorQualityToolAnnotator extends QualityToolAnnotator {
     protected void runTool(@NotNull QualityToolMessageProcessor messageProcessor, @NotNull QualityToolAnnotatorInfo annotatorInfo, @NotNull PhpSdkFileTransfer transfer) throws ExecutionException {
         List<String> params = getCommandLineOptions(annotatorInfo.getFilePath());
         PhpStanValidatorBlackList blackList = PhpStanValidatorBlackList.getInstance(annotatorInfo.getProject());
-        QualityToolProcessCreator.runToolProcess(annotatorInfo, blackList, messageProcessor, annotatorInfo.getProject().getBasePath(), transfer, params);
+
+        String workingDir = QualityToolUtil.getWorkingDirectoryFromAnnotator(annotatorInfo);
+        QualityToolProcessCreator.runToolProcess(annotatorInfo, blackList, messageProcessor, workingDir, transfer, params);
         if (messageProcessor.getInternalErrorMessage() != null) {
             if (annotatorInfo.isOnTheFly()) {
                 String message = messageProcessor.getInternalErrorMessage().getMessageText();
