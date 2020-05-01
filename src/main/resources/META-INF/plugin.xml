@@ -83,6 +83,10 @@
                      implementationClass="de.espend.idea.php.quality.psalm.PsalmValidationInspection"/>
   </extensions>
 
+  <extensionPoints>
+    <extensionPoint qualifiedName="de.espend.idea.php.quality.phpstan.PhpStanConfigurationProvider" interface="de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfigurationProvider"/>
+  </extensionPoints>
+
   <extensions defaultExtensionNs="com.jetbrains.php">
     <typeProvider4 implementation="de.espend.idea.php.generics.type.TemplateAnnotationTypeProvider"/>
 
@@ -103,5 +107,5 @@
 
   <depends>com.intellij.modules.platform</depends>
   <depends>de.espend.idea.php.annotation</depends>
-
+  <depends optional="true" config-file="phpstorm-remote-interpreter.xml">org.jetbrains.plugins.phpstorm-remote-interpreter</depends>
 </idea-plugin>

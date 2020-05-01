@@ -24,11 +24,6 @@ import java.util.List;
  * @author Daniel Espendiller <daniel@espendiller.net>
  */
 public class PhpStanValidatorRemoteConfigurationProvider extends PhpStanValidatorConfigurationProvider {
-    public static PhpStanValidatorRemoteConfigurationProvider INSTANCE = new PhpStanValidatorRemoteConfigurationProvider();
-
-    public PhpStanValidatorRemoteConfigurationProvider() {
-    }
-
     public String getConfigurationName(@Nullable String interpreterName) {
         return PhpStanValidatorRemoteConfiguration.getDefaultName(interpreterName);
     }

@@ -1,0 +1,5 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="de.espend.idea.php.quality">
+        <phpstan.PhpStanConfigurationProvider implementation="de.espend.idea.php.quality.phpstan.remote.PhpStanValidatorRemoteConfigurationProvider"/>
+    </extensions>
+</idea-plugin>
