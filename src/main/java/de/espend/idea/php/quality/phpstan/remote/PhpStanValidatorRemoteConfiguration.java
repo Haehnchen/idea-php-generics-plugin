@@ -3,6 +3,7 @@ package de.espend.idea.php.quality.phpstan.remote;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.xmlb.annotations.Attribute;
+import com.intellij.util.xmlb.annotations.Tag;
 import com.jetbrains.php.config.interpreters.PhpInterpretersManagerImpl;
 import com.jetbrains.php.config.interpreters.PhpSdkDependentConfiguration;
 import de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfiguration;
@@ -12,13 +13,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Daniel Espendiller <daniel@espendiller.net>
  */
+@Tag("phpstan_by_interpreter")
 public class PhpStanValidatorRemoteConfiguration extends PhpStanValidatorConfiguration implements PhpSdkDependentConfiguration {
-    private static final String UNDEFINED = "Undefined interpreter";
-    private static final String INTERPRETER = "Interpreter: ";
     private String myInterpreterId;
-
-    public PhpStanValidatorRemoteConfiguration() {
-    }
 
     @Attribute("interpreter_id")
     @Nullable
