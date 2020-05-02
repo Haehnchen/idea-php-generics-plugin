@@ -4,6 +4,10 @@ import de.espend.idea.php.generics.indexer.TemplateAnnotationIndex;
 import de.espend.idea.php.generics.indexer.dict.TemplateAnnotationUsage;
 import de.espend.idea.php.generics.tests.AnnotationLightCodeInsightFixtureTestCase;
 
+/**
+ * @author Daniel Espendiller <daniel@espendiller.net>
+ * @see TemplateAnnotationIndex
+ */
 public class TemplateAnnotationIndexTest extends AnnotationLightCodeInsightFixtureTestCase {
     public void setUp() throws Exception {
         super.setUp();
@@ -15,10 +19,10 @@ public class TemplateAnnotationIndexTest extends AnnotationLightCodeInsightFixtu
     }
 
     public void testThatTemplateClassIsInIndex() {
-        assertIndexContains(TemplateAnnotationIndex.KEY, "Foo\\Map");
-        assertIndexContains(TemplateAnnotationIndex.KEY, "Foo\\PsalmMap");
-        assertIndexContains(TemplateAnnotationIndex.KEY, "Foo\\Zzz");
-        assertIndexNotContains(TemplateAnnotationIndex.KEY, "Foo\\Bar");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Foo\\Map");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Foo\\PsalmMap");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Foo\\Zzz");
+        assertIndexNotContains(TemplateAnnotationIndex.KEY, "\\Foo\\Bar");
 
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\Instantiator\\Foobar\\Foobar._barInstantiator");
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\instantiator");
@@ -42,6 +46,47 @@ public class TemplateAnnotationIndexTest extends AnnotationLightCodeInsightFixtu
             TemplateAnnotationIndex.KEY,
             "\\instantiatorPhpStan",
             value -> value.getFqn().equals("\\instantiatorPhpStan") && value.getParameterIndex() == 0 && value.getType() == TemplateAnnotationUsage.Type.FUNCTION_CLASS_STRING
+        );
+    }
+
+    public void testThatTemplateMethodWithConstructorTemplateIfInIndex() {
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Template\\MyTemplateImpl.getValue");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Template\\MyTemplateImpl.getValueReturn");
+
+        assertIndexContainsKeyWithValue(
+            TemplateAnnotationIndex.KEY,
+            "\\Template\\MyTemplateImpl.getValue",
+            value -> value.getType() == TemplateAnnotationUsage.Type.METHOD_TEMPLATE && "T".equals(value.getContext())
+        );
+
+        assertIndexContainsKeyWithValue(
+            TemplateAnnotationIndex.KEY,
+            "\\Template\\MyTemplateImpl.getValueReturn",
+            value -> value.getType() == TemplateAnnotationUsage.Type.METHOD_TEMPLATE && "T".equals(value.getContext())
+        );
+    }
+
+    public void testThatTemplateExtendsClassIsInIndex() {
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Extended\\Classes\\MyExtendsImpl");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Extended\\Classes\\MyExtendsImplPsalm");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Extended\\Classes\\MyExtendsImplPhpStan");
+
+        assertIndexContainsKeyWithValue(
+            TemplateAnnotationIndex.KEY,
+            "\\Extended\\Classes\\MyExtendsImpl",
+            value -> value.getType() == TemplateAnnotationUsage.Type.EXTENDS && "\\App\\Foo\\Bar\\MyContainer::\\DateTime".equals(value.getContext())
+        );
+
+        assertIndexContainsKeyWithValue(
+            TemplateAnnotationIndex.KEY,
+            "\\Extended\\Classes\\MyExtendsImplPsalm",
+            value -> value.getType() == TemplateAnnotationUsage.Type.EXTENDS && "\\App\\Foo\\Bar\\MyContainer::\\Extended\\Classes\\MyExtendsImplPalm".equals(value.getContext())
+        );
+
+        assertIndexContainsKeyWithValue(
+            TemplateAnnotationIndex.KEY,
+            "\\Extended\\Classes\\MyExtendsImplPhpStan",
+            value -> value.getType() == TemplateAnnotationUsage.Type.EXTENDS && "\\App\\Foo\\Bar\\MyContainer::\\DateTime".equals(value.getContext())
         );
     }
 }

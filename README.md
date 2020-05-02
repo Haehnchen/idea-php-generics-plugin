@@ -51,6 +51,39 @@ $a = instantiator(Foo::class); // Psalm knows the result is an object of type Fo
     }
 ```
 
+### templates
+
+```php
+    $collection = new FooCollection();
+    
+    // its now a type of "Foobar"
+    $foobar = $collection->getValue();
+    $foobar->get<caret>Foobar(); // method is clickable and autocompletes
+```
+
+```php
+    /**
+     * @[psalm-|phpstan-]template T
+     */
+    class Collection
+    {
+        /**
+         * @[psalm-|phpstan-]return T
+         */
+        public function getValue() {}
+    }
+
+    /**
+     * @[psalm-|phpstan-]extends Collection<Foobar>
+     */
+    class FooCollection extends Collection {}
+
+    class Foobar
+    {
+        public function getFoobar() {}
+    }
+```
+
 ### Object-like arrays
 
 https://psalm.dev/docs/annotating_code/type_syntax/array_types/

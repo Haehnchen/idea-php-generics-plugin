@@ -43,3 +43,43 @@ namespace
         return new $class();
     }
 }
+
+
+namespace Extended\Implementations
+{
+    /**
+     * @template T
+     */
+    class MyContainer
+    {
+        /** @var T */
+        private $value;
+
+        /** @param T $value */
+        public function __construct($value) {
+            $this->value = $value;
+        }
+
+        /** @psalm-return T */
+        public function getValue() {
+            return $this->value;
+        }
+    }
+
+    class Foobar
+    {
+        public function getFoobar(){}
+    }
+}
+
+namespace Extended\Classes
+{
+    use Extended\Implementations\MyContainer;
+
+    /**
+     * @extends \Extended\Implementations\MyContainer<\Extended\Implementations\Foobar>
+     */
+    class MyExtendsImpl extends MyContainer
+    {
+    }
+}

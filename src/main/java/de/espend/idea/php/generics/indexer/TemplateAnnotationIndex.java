@@ -12,9 +12,7 @@ import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocReturnTag;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocTag;
 import com.jetbrains.php.lang.psi.PhpFile;
-import com.jetbrains.php.lang.psi.elements.Function;
-import com.jetbrains.php.lang.psi.elements.Parameter;
-import com.jetbrains.php.lang.psi.elements.PhpClass;
+import com.jetbrains.php.lang.psi.elements.*;
 import de.espend.idea.php.annotation.util.AnnotationUtil;
 import de.espend.idea.php.generics.indexer.dict.TemplateAnnotationUsage;
 import de.espend.idea.php.generics.indexer.externalizer.ObjectStreamDataExternalizer;
@@ -76,7 +74,7 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
 
     @Override
     public int getVersion() {
-        return 2;
+        return 3;
     }
 
     @NotNull
@@ -91,9 +89,15 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
     }
 
     private static class MyPsiRecursiveElementWalkingVisitor extends PsiRecursiveElementWalkingVisitor {
+
+        /**
+         * Matches: "\App\Foo\Bar\MyContainer<\DateTime>"
+         */
+        private static final Pattern CLASS_EXTENDS_MATCHER = Pattern.compile("\\s*([^<]+)\\s*<\\s*([^>]+)\\s*>");
+
         private final Map<String, TemplateAnnotationUsage> map;
 
-        public MyPsiRecursiveElementWalkingVisitor(Map<String, TemplateAnnotationUsage> map) {
+        private MyPsiRecursiveElementWalkingVisitor(Map<String, TemplateAnnotationUsage> map) {
             this.map = map;
         }
 
@@ -102,16 +106,16 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
             if (element instanceof PhpClass) {
                 visitPhpClass((PhpClass) element);
             } else if (element instanceof Function) {
-                visitPhpClass((Function) element);
+                visitPhpFunctionOrMethod((Function) element);
             }
 
             super.visitElement(element);
         }
 
-        private void visitPhpClass(PhpClass phpClass) {
+        private void visitPhpClass(@NotNull PhpClass phpClass) {
             String fqn = phpClass.getFQN();
-            if(fqn.startsWith("\\")) {
-                fqn = fqn.substring(1);
+            if(!fqn.startsWith("\\")) {
+                fqn = "\\" + fqn;
             }
 
             // doctrine has many tests: Doctrine\Tests\Common\Annotations\Fixtures
@@ -120,14 +124,44 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
             if (!fqn.contains("\\Tests\\") && !fqn.contains("\\Fixtures\\") && GenericsUtil.isGenericsClass(phpClass)) {
                 map.put(fqn, new TemplateAnnotationUsage(fqn, TemplateAnnotationUsage.Type.CONSTRUCTOR, 0));
             }
+
+            PhpDocComment phpDocComment = phpClass.getDocComment();
+            if (phpDocComment != null) {
+                for (PhpDocTag phpDocTag : GenericsUtil.getTagElementsByNameForAllFrameworks(phpDocComment, "extends")) {
+                    String tagValue = phpDocTag.getTagValue();
+
+                    Matcher matcher = CLASS_EXTENDS_MATCHER.matcher(tagValue);
+                    if (!matcher.find()) {
+                        continue;
+                    }
+
+                    String extendsClass = matcher.group(1);
+                    String type = matcher.group(2);
+
+                    if (!extendsClass.startsWith("\\")) {
+                        extendsClass = StringUtils.substringBeforeLast(fqn, "\\") + "\\" + extendsClass;
+                    }
+
+                    if (!type.startsWith("\\")) {
+                        type = StringUtils.substringBeforeLast(fqn, "\\") + "\\" + type;
+                    }
+
+                    // @TODO: implement class resolving based on use statement
+                    map.put(fqn, new TemplateAnnotationUsage(fqn, TemplateAnnotationUsage.Type.EXTENDS, 0, extendsClass + "::" + type));
+                }
+            }
+
         }
 
-        private void visitPhpClass(@NotNull Function function) {
+        private void visitPhpFunctionOrMethod(@NotNull Function function) {
             PhpDocComment phpDocComment = function.getDocComment();
             if (phpDocComment == null) {
                 return;
             }
 
+            /*
+             *
+             */
             for (PhpDocTag phpDocTag : GenericsUtil.getTagElementsByNameForAllFrameworks(phpDocComment, "template")) {
                 // @template T
                 String templateName = StringUtils.trim(phpDocTag.getTagValue());
@@ -161,6 +195,41 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
 
                             map.put(fqn, new TemplateAnnotationUsage(fqn, TemplateAnnotationUsage.Type.FUNCTION_CLASS_STRING, i));
                             return;
+                        }
+                    }
+                }
+            }
+
+            /*
+             *
+             */
+            if (function instanceof Method) {
+                for (String docTagValue : GenericsUtil.getReturnTypeTagValues(phpDocComment)) {
+                    // @TODO: "@return" does not provide value, provide workaround
+                    String templateName = docTagValue;
+                    if (StringUtils.isBlank(templateName) || !templateName.matches("\\w+")) {
+                        continue;
+                    }
+
+                    PhpClass containingClass = ((Method) function).getContainingClass();
+                    if (containingClass == null) {
+                        continue;
+                    }
+
+                    PhpDocComment docComment = containingClass.getDocComment();
+                    if (docComment == null) {
+                        continue;
+                    }
+
+                    for (PhpDocTag template : GenericsUtil.getTagElementsByNameForAllFrameworks(docComment, "template")) {
+                        String templateNameClassLevel = template.getTagValue();
+                        if (StringUtils.isBlank(templateNameClassLevel) || !templateNameClassLevel.matches("\\w+")) {
+                            continue;
+                        }
+
+                        if (templateNameClassLevel.equals(templateName)) {
+                            String fqn = function.getFQN();
+                            map.put(fqn, new TemplateAnnotationUsage(fqn, TemplateAnnotationUsage.Type.METHOD_TEMPLATE, 0, templateName));
                         }
                     }
                 }
