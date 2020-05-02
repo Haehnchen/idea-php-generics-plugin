@@ -95,6 +95,53 @@ namespace Instantiator\Foobar
     }
 }
 
+namespace Template
+{
+    /**
+     * @template T
+     */
+    class MyTemplateImpl
+    {
+        /**
+         * @psalm-return T
+         */
+        public function getValue()
+        {
+        }
+
+        /**
+         * @return T
+         */
+        public function getValueReturn()
+        {
+        }
+    }
+}
+
+namespace Extended\Classes
+{
+    /**
+     * @extends \App\Foo\Bar\MyContainer<\DateTime>
+     */
+    class MyExtendsImpl
+    {
+    }
+
+    /**
+     * @psalm-extends \App\Foo\Bar\MyContainer<MyExtendsImplPalm>
+     */
+    class MyExtendsImplPsalm
+    {
+    }
+
+    /**
+     * @phpstan-extends \App\Foo\Bar\MyContainer<\DateTime>
+     */
+    class MyExtendsImplPhpStan
+    {
+    }
+}
+
 namespace
 {
     /**

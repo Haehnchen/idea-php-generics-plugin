@@ -20,15 +20,27 @@ public class TemplateAnnotationUsage implements Serializable {
     @Nullable
     private final Integer parameterIndex;
 
+    @Nullable
+    private String context;
+
     public enum Type {
         FUNCTION_CLASS_STRING,
-        CONSTRUCTOR
+        METHOD_TEMPLATE,
+        CONSTRUCTOR,
+        EXTENDS
     }
 
     public TemplateAnnotationUsage(@NotNull String fqn, @NotNull Type type, @Nullable Integer parameterIndex) {
         this.fqn = fqn;
         this.type = type;
         this.parameterIndex = parameterIndex;
+    }
+
+    public TemplateAnnotationUsage(@NotNull String fqn, @NotNull Type type, @Nullable Integer parameterIndex, @NotNull String context) {
+        this.fqn = fqn;
+        this.type = type;
+        this.parameterIndex = parameterIndex;
+        this.context = context;
     }
 
     @NotNull
@@ -46,12 +58,18 @@ public class TemplateAnnotationUsage implements Serializable {
         return parameterIndex;
     }
 
+    @Nullable
+    public String getContext() {
+        return context;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
             .append(this.fqn)
             .append(this.type.toString())
             .append(this.parameterIndex)
+            .append(this.context)
             .toHashCode();
     }
 
@@ -60,6 +78,7 @@ public class TemplateAnnotationUsage implements Serializable {
         return obj instanceof TemplateAnnotationUsage
             && Objects.equals(((TemplateAnnotationUsage) obj).getFqn(), this.fqn)
             && Objects.equals(((TemplateAnnotationUsage) obj).getType(), this.type)
+            && Objects.equals(((TemplateAnnotationUsage) obj).getContext(), this.context)
             && Objects.equals(((TemplateAnnotationUsage) obj).getParameterIndex(), this.parameterIndex);
     }
 }

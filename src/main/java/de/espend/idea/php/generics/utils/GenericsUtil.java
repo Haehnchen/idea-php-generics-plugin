@@ -429,4 +429,32 @@ public class GenericsUtil {
             phpDocComment.getTagElementsByName("@phpstan-" + parameterName)
         ).flatMap(Stream::of).toArray(PhpDocTag[]::new);
     }
+
+    public static Collection<String> getReturnTypeTagValues(@NotNull PhpDocComment phpDocComment) {
+        String[] strings = {
+            "@psalm-",
+            "@",
+            "@phpstan-"
+        };
+
+        Collection<String> returns = new HashSet<>();
+        for (String prefix : strings) {
+            for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName(prefix + "return")) {
+                String tagValue = StringUtils.trim(phpDocTag.getTagValue());
+                if (StringUtils.isNotBlank(tagValue)) {
+                    returns.add(tagValue);
+                }
+            }
+        }
+
+        // workaround for "@return T" is currently not WOrking
+        for (PhpDocTag phpDocTag : phpDocComment.getTagElementsByName("@return")) {
+            String text = StringUtils.trim(phpDocTag.getText().replaceAll("^\\s*@return\\s+", ""));
+            if (StringUtils.isNotBlank(text)) {
+                returns.add(text);
+            }
+        }
+
+        return returns;
+    }
 }

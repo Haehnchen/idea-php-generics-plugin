@@ -41,4 +41,11 @@ public class TemplateAnnotationTypeProviderTest extends AnnotationLightCodeInsig
             PlatformPatterns.psiElement(Method.class).withName("getFoo")
         );
     }
+
+    public void testTypesTemplateExtends() {
+        assertPhpReferenceResolveTo(PhpFileType.INSTANCE,
+            "<?php\n (new \\Extended\\Classes\\MyExtendsImpl())->getValue()->get<caret>Foobar();\n",
+            PlatformPatterns.psiElement(Method.class).withName("getFoobar")
+        );
+    }
 }
