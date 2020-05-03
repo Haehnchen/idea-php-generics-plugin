@@ -77,6 +77,10 @@ public class TemplateAnnotationTypeProvider implements PhpTypeProvider4 {
 
         String[] subjectAndParameters = s.substring(2).split(String.valueOf('\u0198'));
 
+        if (subjectAndParameters.length == 0) {
+            return null;
+        }
+
         // "@template for parameters"
         // split for "subject" and its "parameters"
         // PhpStorm split on multiple types too
@@ -180,10 +184,16 @@ public class TemplateAnnotationTypeProvider implements PhpTypeProvider4 {
                 continue;
             }
 
-            String s1 = parameters.get(parameterIndex);
-            if (s1 != null) {
-                types.add("#" + this.getKey() + s1);
+            if (parameters.isEmpty()) {
+                return;
             }
+
+            String s1 = parameters.get(parameterIndex);
+            if (s1 == null) {
+                return;
+            }
+
+            types.add("#" + this.getKey() + s1);
         }
     }
 
