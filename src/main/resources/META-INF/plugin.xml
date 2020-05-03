@@ -33,13 +33,13 @@
     <fileBasedIndex implementation="de.espend.idea.php.generics.indexer.TemplateAnnotationIndex"/>
 
 
-    <localInspection groupPath="Generics" shortName="ClassStringLocalInspection" displayName="Class-string expected"
+    <localInspection groupPath="PHP,Generics" shortName="ClassStringLocalInspection" displayName="Class-string expected"
                      groupName="Class"
                      enabledByDefault="true" level="WARNING"
                      language="PHP"
                      implementationClass="de.espend.idea.php.generics.inspection.ClassStringLocalInspection"/>
 
-    <localInspection groupPath="Generics" shortName="PsalmLocalImmutableInspection" displayName="Psalm Local Immutable"
+    <localInspection groupPath="PHP,Generics" shortName="PsalmLocalImmutableInspection" displayName="Psalm Local Immutable"
                      groupName="Class"
                      enabledByDefault="true" level="WARNING"
                      language="PHP"
