@@ -29,6 +29,11 @@ intellij {
     ]
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 patchPluginXml {
     sinceBuild '201.6668'
     changeNotes = htmlFixer('src/main/resources/META-INF/change-notes.html')
