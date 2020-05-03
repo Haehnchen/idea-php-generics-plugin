@@ -84,6 +84,8 @@ public class TemplateAnnotationIndexTest extends AnnotationLightCodeInsightFixtu
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\Extended\\Classes\\MyExtendsImpl");
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\Extended\\Classes\\MyExtendsImplPsalm");
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\Extended\\Classes\\MyExtendsImplPhpStan");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Extended\\Classes\\MyExtendsImplUse");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Extended\\Classes\\MyExtendsImplUseAlias");
 
         assertIndexContainsKeyWithValue(
             TemplateAnnotationIndex.KEY,
@@ -101,6 +103,18 @@ public class TemplateAnnotationIndexTest extends AnnotationLightCodeInsightFixtu
             TemplateAnnotationIndex.KEY,
             "\\Extended\\Classes\\MyExtendsImplPhpStan",
             value -> value.getType() == TemplateAnnotationUsage.Type.EXTENDS && "\\App\\Foo\\Bar\\MyContainer::\\DateTime".equals(value.getContext())
+        );
+
+        assertIndexContainsKeyWithValue(
+            TemplateAnnotationIndex.KEY,
+            "\\Extended\\Classes\\MyExtendsImplUse",
+            value -> value.getType() == TemplateAnnotationUsage.Type.EXTENDS && "\\App\\Foo\\Bar\\MyContainer::\\Extend\\Types\\Foobar".equals(value.getContext())
+        );
+
+        assertIndexContainsKeyWithValue(
+            TemplateAnnotationIndex.KEY,
+            "\\Extended\\Classes\\MyExtendsImplUseAlias",
+            value -> value.getType() == TemplateAnnotationUsage.Type.EXTENDS && "\\App\\Foo\\Bar\\MyContainer::\\Extend\\Types\\Foobar".equals(value.getContext())
         );
     }
 }

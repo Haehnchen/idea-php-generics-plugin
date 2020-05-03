@@ -457,4 +457,45 @@ public class GenericsUtil {
 
         return returns;
     }
+
+    /**
+     * Generate a full FQN class name out of a given short class name with respecting current namespace and use scope
+     *
+     * - "Foobar" needs to have its use statement attached
+     * - No use statement match its on the same namespace as the class
+     *
+     * TODO: find a core function for this
+     *
+     * @param classNameScope \Foobar\Classes
+     * @param shortClassName Foobar
+     */
+    public static String getFqnClassNameFromScope(@NotNull String classNameScope, @NotNull String shortClassName, @NotNull Map<String, String> useImportMap) {
+        // its already on the global namespace: "\Exception"
+        if (shortClassName.startsWith("\\")) {
+            return shortClassName;
+        }
+
+        // not use statement so stop here
+        if (useImportMap.size() == 0) {
+            return shortClassName;
+        }
+
+        // "Foo\Bar" split it on "subnamespace"; if no "subnamespace" only care about the first array item as out use match
+        String[] split = shortClassName.split("\\\\");
+        if (useImportMap.containsKey(split[0])) {
+            String shortClassImport = useImportMap.get(split[0]);
+
+            // on "Foo\Bar" we must extend also "Bar" for the import
+            // "Foo\Bar" => "\Car\Foo\Bar"
+            if (split.length > 1) {
+                String[] yourArray = Arrays.copyOfRange(split, 1, split.length);
+                shortClassImport += "\\" + StringUtils.join(yourArray, "\\");
+            }
+
+            return shortClassImport;
+        }
+
+        // strip the last namespace part and replace it with ours: "Foobar\Bar" => "Foobar\OurShortClass"
+        return StringUtils.substringBeforeLast(classNameScope, "\\") + "\\" + shortClassName;
+    }
 }
