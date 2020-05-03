@@ -4,6 +4,15 @@ Changelog
 # Version names
 * 0.x.x: PhpStorm 2020.1+
 
+## 0.7.0
+* Support full class name resolving based on namespace, alias and use statement for "@template" class definition (Daniel Espendiller)
+* Handle IndexOutOfBoundsException when there are no parameters (Simon Podlipsky)
+* Force use of Java 11 (Simon Podlipsky)
+* Fix impossible split in TemplateAnnotationTypeProvider::complete() (Simon Podlipsky)
+* Move Generics inspections group under PHP (Simon Podlipsky)
+* Support template extraction also for "as object" (Daniel Espendiller)
+* Provide a first working return type resolving for @template and @extends docblocks (Daniel Espendiller)
+
 ## 0.6.0
 * Provide Psalm inspection description (Daniel Espendiller)
 * Higher index version for data object usages since last version (Daniel Espendiller)

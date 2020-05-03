@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>de.espend.idea.php.generics</id>
   <name>PHPStan / Psalm / Generics</name>
-  <version>0.6.0</version>
+  <version>0.7.0</version>
   <vendor email="daniel@espendiller.net" url="http://www.espend.de">espend_de</vendor>
 
   <description><![CDATA[
