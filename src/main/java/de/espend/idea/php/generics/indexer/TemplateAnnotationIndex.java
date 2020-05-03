@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, TemplateAnnotationUsage> {
     public static final ID<String, TemplateAnnotationUsage> KEY = ID.create("de.espend.idea.php.generics.templates");
     private final KeyDescriptor<String> myKeyDescriptor = new EnumeratorStringDescriptor();
-    private static ObjectStreamDataExternalizer<TemplateAnnotationUsage> EXTERNALIZER = new ObjectStreamDataExternalizer<>();
+    private static final ObjectStreamDataExternalizer<TemplateAnnotationUsage> EXTERNALIZER = new ObjectStreamDataExternalizer<>();
 
     @NotNull
     @Override
@@ -123,6 +123,7 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
 
             PhpDocComment phpDocComment = phpClass.getDocComment();
             if (phpDocComment != null) {
+                Map<String, String> useImportMap = null;
                 for (PhpDocTag phpDocTag : GenericsUtil.getTagElementsByNameForAllFrameworks(phpDocComment, "extends")) {
                     String tagValue = phpDocTag.getTagValue();
 
@@ -134,16 +135,22 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
                     String extendsClass = matcher.group(1);
                     String type = matcher.group(2);
 
-                    if (!extendsClass.startsWith("\\")) {
-                        extendsClass = StringUtils.substringBeforeLast(fqn, "\\") + "\\" + extendsClass;
+                    // init the imports scope; to be only loaded once
+                    if (useImportMap == null) {
+                        useImportMap = AnnotationUtil.getUseImportMap(phpDocComment);
                     }
 
-                    if (!type.startsWith("\\")) {
-                        type = StringUtils.substringBeforeLast(fqn, "\\") + "\\" + type;
-                    }
+                    // resolve the class name based on the scope of namespace and use statement
+                    // eg: "@template BarAlias\MyContainer<Bar\Foobar>" we need global namespaces starting with "\"
+                    extendsClass = GenericsUtil.getFqnClassNameFromScope(fqn, extendsClass, useImportMap);
+                    type = GenericsUtil.getFqnClassNameFromScope(fqn, type, useImportMap);
 
-                    // @TODO: implement class resolving based on use statement
-                    map.put(fqn, new TemplateAnnotationUsage(fqn, TemplateAnnotationUsage.Type.EXTENDS, 0, extendsClass + "::" + type));
+                    map.put(fqn, new TemplateAnnotationUsage(
+                        fqn,
+                        TemplateAnnotationUsage.Type.EXTENDS,
+                        0,
+                        extendsClass + "::" + type
+                    ));
                 }
             }
 

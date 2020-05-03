@@ -131,8 +131,19 @@ namespace Template
     }
 }
 
+namespace Extend\Types
+{
+    class Foobar {}
+}
+
 namespace Extended\Classes
 {
+    use App\Foo\Bar\MyContainer;
+    use Extend\Types\Foobar;
+
+    use Extend\Types as Bar;
+    use App\Foo\Bar as BarAlias;
+
     /**
      * @extends \App\Foo\Bar\MyContainer<\DateTime>
      */
@@ -151,6 +162,20 @@ namespace Extended\Classes
      * @phpstan-extends \App\Foo\Bar\MyContainer<\DateTime>
      */
     class MyExtendsImplPhpStan
+    {
+    }
+
+    /**
+     * @extends MyContainer<Foobar>
+     */
+    class MyExtendsImplUse extends MyContainer
+    {
+    }
+
+    /**
+     * @extends BarAlias\MyContainer<Bar\Foobar>
+     */
+    class MyExtendsImplUseAlias extends MyContainer
     {
     }
 }
