@@ -77,6 +77,10 @@ public class TemplateAnnotationTypeProvider implements PhpTypeProvider4 {
 
         String[] subjectAndParameters = s.substring(2).split(String.valueOf('\u0198'));
 
+        if (subjectAndParameters.length == 0) {
+            return null;
+        }
+
         // "@template for parameters"
         // split for "subject" and its "parameters"
         // PhpStorm split on multiple types too
