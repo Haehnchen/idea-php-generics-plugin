@@ -9,16 +9,19 @@ import com.intellij.util.io.EnumeratorStringDescriptor;
 import com.intellij.util.io.KeyDescriptor;
 import com.jetbrains.php.lang.PhpFileType;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
-import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocReturnTag;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.tags.PhpDocTag;
 import com.jetbrains.php.lang.psi.PhpFile;
-import com.jetbrains.php.lang.psi.elements.*;
+import com.jetbrains.php.lang.psi.elements.Function;
+import com.jetbrains.php.lang.psi.elements.Method;
+import com.jetbrains.php.lang.psi.elements.Parameter;
+import com.jetbrains.php.lang.psi.elements.PhpClass;
 import de.espend.idea.php.annotation.util.AnnotationUtil;
 import de.espend.idea.php.generics.indexer.dict.TemplateAnnotationUsage;
 import de.espend.idea.php.generics.indexer.externalizer.ObjectStreamDataExternalizer;
 import de.espend.idea.php.generics.utils.GenericsUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -118,13 +121,6 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
                 fqn = "\\" + fqn;
             }
 
-            // doctrine has many tests: Doctrine\Tests\Common\Annotations\Fixtures
-            // we are on index process, project is not fully loaded here, so filter name based tests
-            // eg PhpUnitUtil.isTestClass not possible
-            if (!fqn.contains("\\Tests\\") && !fqn.contains("\\Fixtures\\") && GenericsUtil.isGenericsClass(phpClass)) {
-                map.put(fqn, new TemplateAnnotationUsage(fqn, TemplateAnnotationUsage.Type.CONSTRUCTOR, 0));
-            }
-
             PhpDocComment phpDocComment = phpClass.getDocComment();
             if (phpDocComment != null) {
                 for (PhpDocTag phpDocTag : GenericsUtil.getTagElementsByNameForAllFrameworks(phpDocComment, "extends")) {
@@ -164,8 +160,8 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
              */
             for (PhpDocTag phpDocTag : GenericsUtil.getTagElementsByNameForAllFrameworks(phpDocComment, "template")) {
                 // @template T
-                String templateName = StringUtils.trim(phpDocTag.getTagValue());
-                if (StringUtils.isBlank(templateName) || !templateName.matches("\\w+")) {
+                String templateName = extractTemplateName(phpDocTag);
+                if (templateName == null) {
                     continue;
                 }
 
@@ -205,9 +201,8 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
              */
             if (function instanceof Method) {
                 for (String docTagValue : GenericsUtil.getReturnTypeTagValues(phpDocComment)) {
-                    // @TODO: "@return" does not provide value, provide workaround
-                    String templateName = docTagValue;
-                    if (StringUtils.isBlank(templateName) || !templateName.matches("\\w+")) {
+                    String templateName = extractTemplateName(docTagValue);
+                    if (templateName == null) {
                         continue;
                     }
 
@@ -222,8 +217,8 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
                     }
 
                     for (PhpDocTag template : GenericsUtil.getTagElementsByNameForAllFrameworks(docComment, "template")) {
-                        String templateNameClassLevel = template.getTagValue();
-                        if (StringUtils.isBlank(templateNameClassLevel) || !templateNameClassLevel.matches("\\w+")) {
+                        String templateNameClassLevel = extractTemplateName(template);
+                        if (StringUtils.isBlank(templateNameClassLevel)) {
                             continue;
                         }
 
@@ -236,29 +231,50 @@ public class TemplateAnnotationIndex extends FileBasedIndexExtension<String, Tem
             }
         }
 
+        /**
+         * Extract the "T"
+         *
+         * "T"
+         * "T as object"
+         */
+        @Nullable
+        private static String extractTemplateName(@NotNull PhpDocTag phpDocTag) {
+            String templateTagValue = phpDocTag.getTagValue();
+            if (StringUtils.isBlank(templateTagValue)) {
+                return null;
+            }
+
+            return extractTemplateName(templateTagValue);
+        }
+
+        /**
+         * Extract the "T"
+         *
+         * "T"
+         * "T as object"
+         */
+        @Nullable
+        private static String extractTemplateName(@NotNull String tagValue) {
+            Matcher matcher = Pattern.compile("^([\\w]+)\\s*").matcher(tagValue);
+            if (!matcher.find()) {
+                return null;
+            }
+
+            return StringUtils.trim(matcher.group(1));
+        }
 
         /**
          * For for the given template name as a return value
          *
          * "@return T"
          * "@psalm-return T"
+         * "@return T as object"
          */
         private boolean hasReturnTypeTemplate(@NotNull PhpDocComment phpDocComment, @NotNull String templateName) {
-            // search for main "@return"
-            PhpDocReturnTag returnTag = phpDocComment.getReturnTag();
-            // getTagValue is not working so we need to check with with text
-            if (returnTag != null && returnTag.getText().matches("@return\\s+" + Pattern.quote(templateName))) {
-                return true;
-            }
-
-            // fallback to @psalm-return
-            for (PhpDocTag phpDocTag : GenericsUtil.getTagElementsByNameForAllFrameworks(phpDocComment, "return")) {
-                if (StringUtils.trim(phpDocTag.getTagValue()).equals(templateName)) {
-                    return true;
-                }
-            }
-
-            return false;
+            return GenericsUtil.getReturnTypeTagValues(phpDocComment)
+                .stream()
+                .map(MyPsiRecursiveElementWalkingVisitor::extractTemplateName)
+                .anyMatch(templateName::equals);
         }
     }
 }

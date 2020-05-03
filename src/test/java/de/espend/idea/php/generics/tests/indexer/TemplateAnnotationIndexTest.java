@@ -19,9 +19,9 @@ public class TemplateAnnotationIndexTest extends AnnotationLightCodeInsightFixtu
     }
 
     public void testThatTemplateClassIsInIndex() {
-        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Foo\\Map");
-        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Foo\\PsalmMap");
-        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Foo\\Zzz");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Foo\\Map.get");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Foo\\PsalmMap.get");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Foo\\Zzz.get");
         assertIndexNotContains(TemplateAnnotationIndex.KEY, "\\Foo\\Bar");
 
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\Instantiator\\Foobar\\Foobar._barInstantiator");
@@ -29,6 +29,7 @@ public class TemplateAnnotationIndexTest extends AnnotationLightCodeInsightFixtu
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\instantiatorParam");
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\instantiatorReturn");
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\instantiatorPhpStan");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\instantiatorPhpStanAsObject");
 
         assertIndexContainsKeyWithValue(
             TemplateAnnotationIndex.KEY,
@@ -47,11 +48,18 @@ public class TemplateAnnotationIndexTest extends AnnotationLightCodeInsightFixtu
             "\\instantiatorPhpStan",
             value -> value.getFqn().equals("\\instantiatorPhpStan") && value.getParameterIndex() == 0 && value.getType() == TemplateAnnotationUsage.Type.FUNCTION_CLASS_STRING
         );
+
+        assertIndexContainsKeyWithValue(
+            TemplateAnnotationIndex.KEY,
+            "\\instantiatorPhpStanAsObject",
+            value -> value.getFqn().equals("\\instantiatorPhpStanAsObject") && value.getParameterIndex() == 1 && value.getType() == TemplateAnnotationUsage.Type.FUNCTION_CLASS_STRING
+        );
     }
 
     public void testThatTemplateMethodWithConstructorTemplateIfInIndex() {
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\Template\\MyTemplateImpl.getValue");
         assertIndexContains(TemplateAnnotationIndex.KEY, "\\Template\\MyTemplateImpl.getValueReturn");
+        assertIndexContains(TemplateAnnotationIndex.KEY, "\\Template\\MyTemplateObject.getValue");
 
         assertIndexContainsKeyWithValue(
             TemplateAnnotationIndex.KEY,
@@ -62,6 +70,12 @@ public class TemplateAnnotationIndexTest extends AnnotationLightCodeInsightFixtu
         assertIndexContainsKeyWithValue(
             TemplateAnnotationIndex.KEY,
             "\\Template\\MyTemplateImpl.getValueReturn",
+            value -> value.getType() == TemplateAnnotationUsage.Type.METHOD_TEMPLATE && "T".equals(value.getContext())
+        );
+
+        assertIndexContainsKeyWithValue(
+            TemplateAnnotationIndex.KEY,
+            "\\Template\\MyTemplateObject.getValue",
             value -> value.getType() == TemplateAnnotationUsage.Type.METHOD_TEMPLATE && "T".equals(value.getContext())
         );
     }

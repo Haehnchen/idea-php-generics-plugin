@@ -116,6 +116,19 @@ namespace Template
         {
         }
     }
+
+    /**
+     * @template T as object
+     */
+    class MyTemplateObject
+    {
+        /**
+         * @return T
+         */
+        public function getValue()
+        {
+        }
+    }
 }
 
 namespace Extended\Classes
@@ -177,6 +190,15 @@ namespace
      * @phpstan-return T
      */
     function instantiatorPhpStan(string $class) {
+        return new $class();
+    }
+
+    /**
+     * @phpstan-template T as object
+     * @phpstan-param class-string<T> $class
+     * @phpstan-return T as object
+     */
+    function instantiatorPhpStanAsObject(string $foobar, string $class) {
         return new $class();
     }
 }
