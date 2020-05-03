@@ -184,10 +184,16 @@ public class TemplateAnnotationTypeProvider implements PhpTypeProvider4 {
                 continue;
             }
 
-            String s1 = parameters.get(parameterIndex);
-            if (s1 != null) {
-                types.add("#" + this.getKey() + s1);
+            if (parameters.isEmpty()) {
+                return;
             }
+
+            String s1 = parameters.get(parameterIndex);
+            if (s1 == null) {
+                return;
+            }
+
+            types.add("#" + this.getKey() + s1);
         }
     }
 
