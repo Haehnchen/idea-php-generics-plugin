@@ -107,7 +107,7 @@ https://psalm.dev/docs/annotating_code/type_syntax/array_types/
 
 Inspection to show disallowed write access
 
-```
+```php
 class PsalmReadOnly {
     /**
      * @psalm-readonly
@@ -125,7 +125,7 @@ class PsalmImmutable {
 
 Follows into errors hints
 
-```
+```php
 (new PsalmReadOnly())->readOnly = 'test';
 (new PsalmImmutable())->readOnly = 'test';
 ```
