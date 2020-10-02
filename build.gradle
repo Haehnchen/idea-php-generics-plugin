@@ -13,6 +13,7 @@ apply plugin: 'java'
 
 intellij {
     version ideaVersion
+    type 'IU'
     pluginName 'PHP Generics'
     updateSinceUntilBuild false
     plugins = [
