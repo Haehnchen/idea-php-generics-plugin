@@ -2,6 +2,7 @@ package de.espend.idea.php.quality.psalm.blacklist;
 
 import com.intellij.openapi.project.Project;
 import com.jetbrains.php.tools.quality.QualityToolsIgnoreFilesConfigurable;
+import de.espend.idea.php.quality.psalm.PsalmQualityToolType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -9,16 +10,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PsalmValidatorIgnoredFilesConfigurable extends QualityToolsIgnoreFilesConfigurable {
     public PsalmValidatorIgnoredFilesConfigurable(Project project) {
-        super(PsalmValidatorBlackList.getInstance(project), project);
+        super(PsalmQualityToolType.getInstance(), project);
     }
 
     @NotNull
     public String getId() {
         return PsalmValidatorIgnoredFilesConfigurable.class.getName();
-    }
-
-    @NotNull
-    protected String getQualityToolName() {
-        return "Psalm Validator";
     }
 }

@@ -24,9 +24,6 @@ import java.util.List;
  * @author Daniel Espendiller <daniel@espendiller.net>
  */
 public class PhpStanValidatorRemoteConfigurationProvider extends PhpStanValidatorConfigurationProvider {
-    public String getConfigurationName(@Nullable String interpreterName) {
-        return PhpStanValidatorRemoteConfiguration.getDefaultName(interpreterName);
-    }
 
     public boolean canLoad(@NotNull String tagName) {
         return StringUtil.equals(tagName, "phpstan_by_interpreter");

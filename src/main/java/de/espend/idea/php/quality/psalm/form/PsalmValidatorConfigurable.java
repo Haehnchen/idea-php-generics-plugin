@@ -4,11 +4,9 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.jetbrains.php.tools.quality.QualityToolConfigurationComboBox;
 import com.jetbrains.php.tools.quality.QualityToolProjectConfigurableForm;
-import com.jetbrains.php.tools.quality.QualityToolProjectConfiguration;
-import com.jetbrains.php.tools.quality.QualityToolsIgnoreFilesConfigurable;
-import de.espend.idea.php.quality.psalm.PsalmValidationInspection;
-import de.espend.idea.php.quality.psalm.blacklist.PsalmValidatorIgnoredFilesConfigurable;
-import de.espend.idea.php.quality.psalm.configuration.PsalmValidatorProjectConfiguration;
+import com.jetbrains.php.tools.quality.QualityToolType;
+import de.espend.idea.php.quality.psalm.PsalmQualityToolType;
+import de.espend.idea.php.quality.psalm.configuration.PsalmValidatorConfiguration;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,10 +16,6 @@ import org.jetbrains.annotations.NotNull;
 public class PsalmValidatorConfigurable extends QualityToolProjectConfigurableForm implements Configurable.NoScroll {
     public PsalmValidatorConfigurable(@NotNull Project project) {
         super(project);
-    }
-
-    protected QualityToolProjectConfiguration getProjectConfiguration() {
-        return PsalmValidatorProjectConfiguration.getInstance(this.myProject);
     }
 
     @Nls
@@ -39,17 +33,13 @@ public class PsalmValidatorConfigurable extends QualityToolProjectConfigurableFo
     }
 
     @NotNull
-    protected String getInspectionShortName() {
-        return new PsalmValidationInspection().getShortName();
-    }
-
-    @NotNull
-    protected QualityToolConfigurationComboBox createConfigurationComboBox() {
+    protected QualityToolConfigurationComboBox<PsalmValidatorConfiguration> createConfigurationComboBox() {
         return new PsalmValidatorConfigurationComboBox(this.myProject);
     }
 
-    protected QualityToolsIgnoreFilesConfigurable getIgnoredFilesConfigurable() {
-        return new PsalmValidatorIgnoredFilesConfigurable(this.myProject);
+    @Override
+    protected QualityToolType<PsalmValidatorConfiguration> getQualityToolType() {
+        return PsalmQualityToolType.getInstance();
     }
 }
 

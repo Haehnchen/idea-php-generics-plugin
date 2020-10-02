@@ -7,7 +7,8 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.jetbrains.php.tools.quality.QualityToolProjectConfiguration;
-import de.espend.idea.php.quality.psalm.PsalmValidationInspection;
+import com.jetbrains.php.tools.quality.QualityToolType;
+import de.espend.idea.php.quality.psalm.PsalmQualityToolType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,6 +23,11 @@ public class PsalmValidatorProjectConfiguration extends QualityToolProjectConfig
     public PsalmValidatorProjectConfiguration() {
     }
 
+    @Override
+    protected QualityToolType<PsalmValidatorConfiguration> getQualityToolType() {
+        return PsalmQualityToolType.getInstance();
+    }
+
     public static PsalmValidatorProjectConfiguration getInstance(Project project) {
         return ServiceManager.getService(project, PsalmValidatorProjectConfiguration.class);
     }
@@ -34,20 +40,6 @@ public class PsalmValidatorProjectConfiguration extends QualityToolProjectConfig
     @Override
     public void loadState(@NotNull PsalmValidatorProjectConfiguration state) {
         XmlSerializerUtil.copyBean(state, this);
-    }
-
-    protected String getInspectionId() {
-        return (new PsalmValidationInspection()).getID();
-    }
-
-    @NotNull
-    protected String getQualityToolName() {
-        return "Psalm Validator";
-    }
-
-    @NotNull
-    protected PsalmValidatorConfigurationManager getConfigurationManager(@NotNull Project project) {
-        return PsalmValidatorConfigurationManager.getInstance(project);
     }
 }
 

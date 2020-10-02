@@ -3,7 +3,8 @@ package de.espend.idea.php.quality.psalm.configuration;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.util.xmlb.XmlSerializer;
 import com.jetbrains.php.tools.quality.QualityToolConfigurationBaseManager;
-import com.jetbrains.php.tools.quality.QualityToolConfigurationProvider;
+import com.jetbrains.php.tools.quality.QualityToolType;
+import de.espend.idea.php.quality.psalm.PsalmQualityToolType;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +14,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public class PsalmValidatorConfigurationBaseManager extends QualityToolConfigurationBaseManager<PsalmValidatorConfiguration> {
     public PsalmValidatorConfigurationBaseManager() {
+    }
+
+    @Override
+    protected @NotNull QualityToolType<PsalmValidatorConfiguration> getQualityToolType() {
+        return PsalmQualityToolType.getInstance();
     }
 
     public static PsalmValidatorConfigurationBaseManager getInstance() {
@@ -25,11 +31,6 @@ public class PsalmValidatorConfigurationBaseManager extends QualityToolConfigura
     }
 
     @NotNull
-    protected String getQualityToolName() {
-        return "Psalm";
-    }
-
-    @NotNull
     protected String getOldStyleToolPathName() {
         return "psalm";
     }
@@ -37,11 +38,6 @@ public class PsalmValidatorConfigurationBaseManager extends QualityToolConfigura
     @NotNull
     protected String getConfigurationRootName() {
         return "psalm_settings";
-    }
-
-    @Nullable
-    protected QualityToolConfigurationProvider<PsalmValidatorConfiguration> getConfigurationProvider() {
-        return PsalmValidatorConfigurationProvider.getInstances();
     }
 
     @Nullable

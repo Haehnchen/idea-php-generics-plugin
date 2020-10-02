@@ -7,7 +7,8 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.jetbrains.php.tools.quality.QualityToolProjectConfiguration;
-import de.espend.idea.php.quality.phpstan.PhpStanFixerValidationInspection;
+import com.jetbrains.php.tools.quality.QualityToolType;
+import de.espend.idea.php.quality.phpstan.PhpStanQualityToolType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,6 +23,11 @@ public class PhpStanValidatorProjectConfiguration extends QualityToolProjectConf
     public PhpStanValidatorProjectConfiguration() {
     }
 
+    @Override
+    protected QualityToolType<PhpStanValidatorConfiguration> getQualityToolType() {
+        return PhpStanQualityToolType.getInstance();
+    }
+
     public static PhpStanValidatorProjectConfiguration getInstance(Project project) {
         return ServiceManager.getService(project, PhpStanValidatorProjectConfiguration.class);
     }
@@ -34,20 +40,6 @@ public class PhpStanValidatorProjectConfiguration extends QualityToolProjectConf
     @Override
     public void loadState(@NotNull PhpStanValidatorProjectConfiguration state) {
         XmlSerializerUtil.copyBean(state, this);
-    }
-
-    protected String getInspectionId() {
-        return (new PhpStanFixerValidationInspection()).getID();
-    }
-
-    @NotNull
-    protected String getQualityToolName() {
-        return "PhpStan Validator";
-    }
-
-    @NotNull
-    protected PhpStanValidatorConfigurationManager getConfigurationManager(@NotNull Project project) {
-        return PhpStanValidatorConfigurationManager.getInstance(project);
     }
 }
 

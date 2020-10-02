@@ -4,6 +4,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.jetbrains.php.tools.quality.QualityToolConfigurableForm;
+import com.jetbrains.php.tools.quality.QualityToolType;
+import de.espend.idea.php.quality.psalm.PsalmQualityToolType;
 import de.espend.idea.php.quality.psalm.configuration.PsalmValidatorConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nls;
@@ -13,6 +15,11 @@ import org.jetbrains.annotations.Nullable;
 public class PsalmValidatorConfigurableForm<C extends PsalmValidatorConfiguration> extends QualityToolConfigurableForm<C> {
     public PsalmValidatorConfigurableForm(@NotNull Project project, @NotNull C configuration) {
         super(project, configuration, "Psalm", "psalm");
+    }
+
+    @Override
+    public QualityToolType getQualityToolType() {
+        return PsalmQualityToolType.getInstance();
     }
 
     @Nls

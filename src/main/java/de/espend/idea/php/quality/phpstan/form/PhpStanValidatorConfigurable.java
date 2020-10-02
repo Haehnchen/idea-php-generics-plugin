@@ -4,12 +4,8 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.jetbrains.php.tools.quality.QualityToolConfigurationComboBox;
 import com.jetbrains.php.tools.quality.QualityToolProjectConfigurableForm;
-import com.jetbrains.php.tools.quality.QualityToolProjectConfiguration;
-import com.jetbrains.php.tools.quality.QualityToolsIgnoreFilesConfigurable;
-import com.jetbrains.php.tools.quality.messDetector.*;
-import de.espend.idea.php.quality.phpstan.PhpStanFixerValidationInspection;
-import de.espend.idea.php.quality.phpstan.blacklist.PhpStanValidatorIgnoredFilesConfigurable;
-import de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorProjectConfiguration;
+import com.jetbrains.php.tools.quality.QualityToolType;
+import de.espend.idea.php.quality.phpstan.PhpStanQualityToolType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,10 +15,6 @@ import org.jetbrains.annotations.NotNull;
 public class PhpStanValidatorConfigurable extends QualityToolProjectConfigurableForm implements Configurable.NoScroll {
     public PhpStanValidatorConfigurable(@NotNull Project project) {
         super(project);
-    }
-
-    protected QualityToolProjectConfiguration getProjectConfiguration() {
-        return PhpStanValidatorProjectConfiguration.getInstance(this.myProject);
     }
 
     @Nls
@@ -40,17 +32,13 @@ public class PhpStanValidatorConfigurable extends QualityToolProjectConfigurable
     }
 
     @NotNull
-    protected String getInspectionShortName() {
-        return new PhpStanFixerValidationInspection().getShortName();
-    }
-
-    @NotNull
     protected QualityToolConfigurationComboBox createConfigurationComboBox() {
         return new PhpStanValidatorConfigurationComboBox(this.myProject);
     }
 
-    protected QualityToolsIgnoreFilesConfigurable getIgnoredFilesConfigurable() {
-        return new PhpStanValidatorIgnoredFilesConfigurable(this.myProject);
+    @Override
+    protected QualityToolType getQualityToolType() {
+        return PhpStanQualityToolType.getInstance();
     }
 }
 

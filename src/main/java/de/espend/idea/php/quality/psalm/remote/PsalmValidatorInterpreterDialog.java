@@ -13,11 +13,7 @@ import java.util.List;
  */
 public class PsalmValidatorInterpreterDialog extends QualityToolByInterpreterDialog<PsalmValidatorConfiguration, PsalmValidatorRemoteConfiguration> {
     protected PsalmValidatorInterpreterDialog(@Nullable Project project, @NotNull List<PsalmValidatorConfiguration> settings) {
-        super(project, settings, "Psalm");
-    }
-
-    protected boolean canProcessSetting(@NotNull PsalmValidatorConfiguration settings) {
-        return settings instanceof PsalmValidatorRemoteConfiguration;
+        super(project, settings, "Psalm", PsalmValidatorRemoteConfiguration.class);
     }
 
     @Nullable

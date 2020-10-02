@@ -2,10 +2,10 @@ package de.espend.idea.php.quality.phpstan.form;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.Version;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.jetbrains.php.tools.quality.QualityToolConfigurableForm;
-import com.jetbrains.php.tools.quality.messDetector.MessDetectorConfigurableForm;
+import com.jetbrains.php.tools.quality.QualityToolType;
+import de.espend.idea.php.quality.phpstan.PhpStanQualityToolType;
 import de.espend.idea.php.quality.phpstan.configuration.PhpStanValidatorConfiguration;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +14,11 @@ import org.jetbrains.annotations.Nullable;
 public class PhpStanValidatorConfigurableForm<C extends PhpStanValidatorConfiguration> extends QualityToolConfigurableForm<C> {
     public PhpStanValidatorConfigurableForm(@NotNull Project project, @NotNull C configuration) {
         super(project, configuration, "PhpStan", "phpstan");
+    }
+
+    @Override
+    public QualityToolType getQualityToolType() {
+        return PhpStanQualityToolType.getInstance();
     }
 
     @Nls

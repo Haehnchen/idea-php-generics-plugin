@@ -13,11 +13,7 @@ import java.util.List;
  */
 public class PhpStanValidatorInterpreterDialog extends QualityToolByInterpreterDialog<PhpStanValidatorConfiguration, PhpStanValidatorRemoteConfiguration> {
     protected PhpStanValidatorInterpreterDialog(@Nullable Project project, @NotNull List<PhpStanValidatorConfiguration> settings) {
-        super(project, settings, "PHPStan");
-    }
-
-    protected boolean canProcessSetting(@NotNull PhpStanValidatorConfiguration settings) {
-        return settings instanceof PhpStanValidatorRemoteConfiguration;
+        super(project, settings, "PHPStan", PhpStanValidatorRemoteConfiguration.class);
     }
 
     @Nullable

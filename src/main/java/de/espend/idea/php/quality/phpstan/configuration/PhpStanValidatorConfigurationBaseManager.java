@@ -3,7 +3,8 @@ package de.espend.idea.php.quality.phpstan.configuration;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.util.xmlb.XmlSerializer;
 import com.jetbrains.php.tools.quality.QualityToolConfigurationBaseManager;
-import com.jetbrains.php.tools.quality.QualityToolConfigurationProvider;
+import com.jetbrains.php.tools.quality.QualityToolType;
+import de.espend.idea.php.quality.phpstan.PhpStanQualityToolType;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,18 +16,13 @@ public class PhpStanValidatorConfigurationBaseManager extends QualityToolConfigu
     public PhpStanValidatorConfigurationBaseManager() {
     }
 
+    @Override
+    protected @NotNull QualityToolType<PhpStanValidatorConfiguration> getQualityToolType() {
+        return PhpStanQualityToolType.getInstance();
+    }
+
     public static PhpStanValidatorConfigurationBaseManager getInstance() {
         return ServiceManager.getService(PhpStanValidatorConfigurationBaseManager.class);
-    }
-
-    @NotNull
-    protected PhpStanValidatorConfiguration createLocalSettings() {
-        return new PhpStanValidatorConfiguration();
-    }
-
-    @NotNull
-    protected String getQualityToolName() {
-        return "PhpStan";
     }
 
     @NotNull
@@ -37,11 +33,6 @@ public class PhpStanValidatorConfigurationBaseManager extends QualityToolConfigu
     @NotNull
     protected String getConfigurationRootName() {
         return "phpstan_settings";
-    }
-
-    @Nullable
-    protected QualityToolConfigurationProvider<PhpStanValidatorConfiguration> getConfigurationProvider() {
-        return PhpStanValidatorConfigurationProvider.getInstances();
     }
 
     @Nullable
