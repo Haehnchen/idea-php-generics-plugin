@@ -1,5 +1,11 @@
 # IntelliJ IDEA / PhpStorm PHPStan / Psalm / Generics
 
+**Use Replacements:**
+
+ - https://github.com/JetBrains/phpstorm-psalm-plugin
+ - https://github.com/JetBrains/phpstorm-phpstan-plugin
+
+
 [![Build Status](https://travis-ci.org/Haehnchen/idea-php-generics-plugin.svg?branch=master)](https://travis-ci.org/Haehnchen/idea-php-generics-plugin)
 [![Version](http://phpstorm.espend.de/badge/12754/version)](https://plugins.jetbrains.com/plugin/12754)
 [![Downloads](http://phpstorm.espend.de/badge/12754/downloads)](https://plugins.jetbrains.com/plugin/12754)
